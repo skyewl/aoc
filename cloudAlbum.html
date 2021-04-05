@@ -11,7 +11,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Expires" content="0" />
-  <title>云相册</title>
+  <title>全屏云视代 融竞犇新篇</title>
   <script>
     //rem
     (function (doc, win) {
@@ -35,7 +35,7 @@
   <script src="./js/jquery.min.js"></script>
   <script src="./js/layer_mobile/layer.js"></script>
   <script src="./js/util.js"></script>
-  <script src="./js/vue.min.js"></script>
+  <script src="./js/vue.js"></script>
   <script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js "></script>
   <script src="./js/share.js"></script>
   
@@ -48,14 +48,56 @@
       height: 100%;
       position: absolute;
       background-image: url(./img/album-bg.jpg);
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+    .block-list{
+      position: relative;
+    }
+    .block-list .block{
+      width: 3.36rem;
+      height: 2.92rem;
+      position: absolute;
+      background-color: antiquewhite;
+    }
+    .block-list .block1{
+      top: 4.12rem;
+      left: 3.96rem;
+    }
+    .block-list .block2{
+      top: 5.72rem;
+      left: 1.26rem;
+    }
+    .block-list .block3{
+      top: 5.72rem;
+      left: 6.68rem;
+    }
+    .block-list .block4{
+      top: 8.86rem;
+      left: 1.26rem;
+    }
+    .block-list .block5{
+      top: 8.86rem;
+      left: 6.68rem;
+    }
+    .block-list .block6{
+      top: 10.56rem;
+      left: 3.96rem;
     }
   </style>
 </head>
 <body>
-  <div id="app" v-cloak>
-    <div class="album-bg">
-
-    </div>
+  <div id="app">
+    <div class="album-bg"></div>
+    <ul class="block-list">
+      <li class="block" v-for="item in menuList" :class="['block' + item.menuId ]" @click="clickMenu(item.menuId)"></li>
+      <!-- <li class="block block2"></li>
+      <li class="block block3"></li>
+      <li class="block block4"></li>
+      <li class="block block5"></li>
+      <li class="block block6"></li> -->
+    </ul>
   </div>
   
   <script>
@@ -63,7 +105,26 @@
       el: '#app',
       data: {
         openid: '',
-        
+        menuList: [
+          {
+            menuId: 1
+          },
+          {
+            menuId: 2
+          },
+          {
+            menuId: 3
+          },
+          {
+            menuId: 4
+          },
+          {
+            menuId: 5
+          },
+          {
+            menuId: 6
+          },
+        ]
       },
       created: function () {
         
@@ -72,7 +133,9 @@
         
       },
       methods: {
-        
+        clickMenu(){
+
+        }
       }
     })
     

@@ -137,11 +137,7 @@ function getOpenid(){
   let openid = url.searchParams.get('openid');
   openid = openid ? openid : localStorage.getItem('openid')
   if (!openid) {
-      layer.open({
-          content: '没有获取到openid请联系管理员!',
-          btn: '我知道了'
-      });
-      window.location.href = apipath + '/aoc/api/wechat/wechatindex';
+    window.location.href = apipath + '/aoc/api/wechat/wechatindex';
   }
   return openid
 }

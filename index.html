@@ -11,7 +11,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Expires" content="0" />
-  <title>首页</title>
+  <title>全屏云视代 融竞犇新篇</title>
   <script>
     //rem
     (function (doc, win) {
@@ -34,7 +34,7 @@
   
   <script src="./js/jquery.min.js"></script>
   <script src="./js/layer_mobile/layer.js"></script>
-  <script src="./js/util.js?v=20210404"></script>
+  <script src="./js/util.js?v=20210405"></script>
   <script src="./js/vue.min.js"></script>
   <script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js "></script>
   <script src="./js/share.js"></script>
@@ -318,6 +318,7 @@
             })
             return false
           }
+          
           ajaxGet(
             apipath + '/aoc/api/app/aocuser/get/' + self.openid, 
             {},
@@ -345,15 +346,15 @@
           )
         },
         gotoAlbum(){
-          if(this.menu.yunxiangche==1){
-            window.location.href='./cloudAlbum.html'
-          } else {
+          if(this.menu.yunxiangche==0){
             layer.open({
               type: 1,
               content: $('.notStartedLayer').html(),
               shade: 'background-color: rgba(0,0,0,.8)', //自定义遮罩的透明度
               style: 'background:none; border:none;' //自定风格
             });
+          } else {
+            window.location.href='./cloudAlbum.html'
           }
         },
         gotoTrip(){
