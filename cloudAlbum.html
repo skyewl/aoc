@@ -63,153 +63,16 @@
       el: '#app',
       data: {
         openid: '',
-        menu:{
-          // sid: "E3944FC892AC11EBA15800163E32A83E",
-          // chuangyiheyin: 0,
-          // tijiaoxinxi: 0,
-          // yunxiangche: 0
-        },
-        info:{
-          // "sid": "A371F57B926711EBA15800163E32A83E",
-          // "nickname": "杜爱枝",
-          // "headImg": "https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJM33scbPPPvpP94WswdD9hwyVgDB71FiaYz8jMDdEs3nDO2JkmGnKs9dSV8ucRF72Y1A1ZyCZb0hw/132",
-          // "openid": "oarFBv5e9Up-N7f4SIDdIDCHgF7A",
-          // "seatid": 0,
-          // "realname": "杜爱枝",
-          // "mobile": "13622221111",
-          // "company": "社会",
-          // "position": "额呵呵",
-          // "photoName": "",
-          // "photoHeader": "",
-          // "isBm": "1",
-          // "isQd": "0"
-        },
-        dateList:[
-          {
-            value: '4月6日'
-          },
-          {
-            value: '4月7日'
-          },
-          {
-            value: '4月8日'
-          },
-          {
-            value: '4月9日'
-          },
-          {
-            value: '4月10日'
-          },
-        ],
-        tripLayerShow: false,
-        active: 0
+        
       },
       created: function () {
-        this.openid = getOpenid()
-        setLoc('openid', this.openid)
-        console.log(this.openid)
-        this.getMenu()
+        
       },
       mounted: function () {
-        $(document).on('click', '.close', function() {
-          layer.closeAll()
-        });
+        
       },
       methods: {
-        getMenu(){
-          let self = this
-          ajaxGet(
-            apipath + '/aoc/api/app/aocjindu/get', 
-            {},
-            function (res) {
-              console.log(res);
-              if(res.status == 200){
-                self.menu=res.results
-              }
-            },
-            function (res) {
-              console.log(res);
-            }
-          )
-        },
-        gotoSignup(){
-          let self = this
-          ajaxGet(
-            apipath + '/aoc/api/app/aocuser/get/' + self.openid, 
-            {},
-            function (res) {
-              console.log(res);
-              if(res.status == 200){
-                self.info=res.results
-                if(self.info && self.info.isBm==1){
-                  window.location.href='./signupSuc.html'
-                } else if(self.menu.tijiaoxinxi==1){
-                  window.location.href='./signup.html'
-                } else if(self.menu.tijiaoxinxi==0){
-                  layer.open({
-                      type: 1,
-                      content: $('.endedLayer').html(),
-                      shade: 'background-color: rgba(0,0,0,.8)', //自定义遮罩的透明度
-                      style: 'background:none; border:none;' //自定风格
-                  });
-                }
-              } else {
-                layerMsg(res.msg);
-              }
-            },
-            function (res) {
-              console.log(res);
-            }
-          )
-        },
         
-        gotoPhoto(){
-          let self = this
-          ajaxGet(
-            apipath + '/aoc/api/app/aocuser/get/' + self.openid, 
-            {},
-            function (res) {
-              console.log('aocuser/get==',res);
-              if(res.status == 200){
-                self.info = res.results
-                if(self.info && self.info.isQd==1){
-                  window.location.href='./creatSign.html'
-                } else {
-                  layer.open({
-                    type: 1,
-                    content: $('.signTip').html(),
-                    shade: 'background-color: rgba(0,0,0,.8)', //自定义遮罩的透明度
-                    style: 'background:none; border:none;' //自定风格
-                  })
-                }
-              } else {
-                layerMsg(res.msg);
-              }
-            },
-            function (res) {
-              console.log(res);
-            }
-          )
-        },
-        gotoAlbum(){
-          if(this.menu.yunxiangche==1){
-            window.location.href='./cloudAlbum.html'
-          } else {
-            layer.open({
-              type: 1,
-              content: $('.notStartedLayer').html(),
-              shade: 'background-color: rgba(0,0,0,.8)', //自定义遮罩的透明度
-              style: 'background:none; border:none;' //自定风格
-            });
-          }
-        },
-        gotoTrip(){
-          this.tripLayerShow = true
-        },
-        dateTabClick(index){
-          console.log(index)
-          this.active = index
-        }
       }
     })
     

@@ -37,19 +37,12 @@
   <script src="./js/vue.min.js"></script>
   <script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js "></script>
   <script src="./js/share.js"></script>
-  <link rel="stylesheet" href="./css/base.css?v=20210404">
-  <link rel="stylesheet" href="./css/signup.css?v=20210404">
+  <link rel="stylesheet" href="./css/base.css">
+  <link rel="stylesheet" href="./css/signup.css?v=20210405">
 </head>
 <body>
   <div class="signup-wrap" id="app" :style="{ height: bodyHeight + 'px' }">
-    <h1 class="logo-box">
-      <img src="./img/logo.png" class="logo-img" alt="">
-    </h1>
-    <div class="aoc-tit">
-      <img src="./img/AOC.png" class="aoc-img" alt="">
-      <p class="tit">渠道合作伙伴大会</p>
-      <p class="date">2021/04/07</p>
-    </div>
+    <div class="theme"></div>
     <div class="sign-form">
       <div class="form-item">
         <label class="lab" for="name">姓名</label>
@@ -69,12 +62,12 @@
           <input class="ipt" id="unit" type="text" autocomplete="off" v-model="company">
         </div>
       </div>
-      <div class="form-item">
+      <!-- <div class="form-item">
         <label class="lab" for="post">职位</label>
         <div class="ipt-box">
           <input class="ipt" id="post" type="text" autocomplete="off" v-model="position">
         </div>
-      </div>
+      </div> -->
       <div class="form-item">
         <div class="btn" @click="signupSub">提交</div>
       </div>
@@ -120,10 +113,6 @@
           }
           if (!self.company) {
             layerMsg('请输入单位');
-            return;
-          }
-          if (!self.position) {
-            layerMsg('请输入职位');
             return;
           }
           let postData = {

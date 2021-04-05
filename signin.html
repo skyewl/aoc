@@ -11,7 +11,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Expires" content="0" />
-  <title>报名</title>
+  <title>签到</title>
   <script>
     //rem
     (function (doc, win) {
@@ -31,27 +31,21 @@
       doc.addEventListener('DOMContentLoaded', recalc, false);
     })(document, window);
   </script>
-  <link rel="stylesheet" href="./css/base.css?v=20210404">
-  <link rel="stylesheet" href="./css/signup.css?v=20210404">
+  <link rel="stylesheet" href="./css/base.css">
+  <link rel="stylesheet" href="./css/signup.css?v=20210405">
   <script src="./js/jquery.min.js"></script>
   <script src="./js/layer_mobile/layer.js"></script>
-  <script src="./js/util.js?v=20210404"></script>
+  <script src="./js/util.js"></script>
   <script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js "></script>
   <script src="./js/share.js"></script>
 </head>
 <body>
   <div class="signup-wrap">
-    <h1 class="logo-box">
-      <img src="./img/logo.png" class="logo-img" alt="">
-    </h1>
-    <div class="aoc-tit">
-      <img src="./img/AOC.png" class="aoc-img" alt="">
-      <p class="tit">渠道合作伙伴大会</p>
-      <p class="date">2021/04/07</p>
-    </div>
+    <div class="theme"></div>
     <div class="suc-box">
-      <p class="dec" style="padding-top: 1.7rem;">请到大屏幕端<br>签到选位</p>
+      <p class="dec" style="padding-top: 1.6rem;">请到大屏幕端<br>签到选位</p>
     </div>
+    <div class="backBtn"></div>
   </div>
   <script>
     let deviceNo = getparam('deviceNo')
@@ -74,7 +68,9 @@
         console.log(res);
       }
     )
-    
+    $('.backBtn').on('click', function(){
+      window.location.href='./index.html'
+    })
   </script>
 </body>
 </html>

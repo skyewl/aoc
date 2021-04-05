@@ -39,19 +39,12 @@
   <script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js "></script>
   <script src="./js/share.js"></script>
   
-  <link rel="stylesheet" href="./css/base.css?v=20210404">
-  <link rel="stylesheet" href="./css/signup.css?v=20210404">
+  <link rel="stylesheet" href="./css/base.css">
+  <link rel="stylesheet" href="./css/signup.css?v=20210405">
 </head>
 <body>
   <div class="signup-wrap" id="app" v-cloak>
-    <h1 class="logo-box">
-      <img src="./img/logo.png" class="logo-img" alt="">
-    </h1>
-    <div class="aoc-tit">
-      <img src="./img/AOC.png" class="aoc-img" alt="">
-      <p class="tit">渠道合作伙伴大会</p>
-      <p class="date">2021/04/07</p>
-    </div>
+    <div class="theme"></div>
     <div class="nav-list">
       <ul>
         <li class="nav-item" @click="gotoSignup">
@@ -148,17 +141,17 @@
             </div>
             <div class="con-text" v-if="active==2">
               <p class="bigTit">行程安排</p>
-              <p style="padding-top: .3rem;">
-                09:00 希尔顿酒店出发前往苍山(车程:酒店到苍山8KM，约15分钟)。<br>
-                09:30 乘坐洗马潭索道，一路风光无限，可以从空中看到洱海壮观的全貌;打开身体感官探索大自然，贴近自然。<br>
-                11:30 下山，乘车前往餐厅(车程:苍山到餐厅5KM，约15分钟)。<br>
+              <p style="padding-top: .3rem;"> 
+                09:00 希尔顿酒店出发前往苍山希尔顿酒店出发前往苍山<br>
+                09:30 乘坐洗马潭索道<br>
+                11:30 下山，乘车前往餐厅<br>
                 12:00 松梅园享用午餐 <br>
-                13:30 前往一处白族人家的院子(车程:餐厅到周城蓝染体验地45KM，约1小时) <br>
-                14:00 了解白族非遗—【蓝染的工艺和文化】体验蓝染的魅力，亲手制作，通过蓝染，让我们一起学习古村落智慧。 <br>
-                16:00 乘车前往喜洲古镇(车程:蓝染体验地到喜洲古镇8KM，约15分钟) <br>
-                16:30 在喜洲古镇里悠闲地在散步，探寻喜洲白族民居的生活文与化，享受一段古朴悠闲的慢时光。(喜洲古镇打卡点:1，严家大院+外围网红墙 2，破旧白族房子3，题名坊 4，舌尖上的中国喜洲粑粑拍摄地) <br>
-                18:00 乘车前往餐厅(车程:喜洲古镇到餐厅20KM，约30分钟) <br>
-                18:30 爱膳菌锅锅享用晚餐(安排大理白族歌舞表演+敬酒歌)
+                13:30 前往一处白族人家的院子 <br>
+                14:00 了解白族非遗—【蓝染的工艺和文化】体验蓝染的魅力 <br>
+                16:00 乘车前往喜洲古镇 <br>
+                16:30 在喜洲古镇里悠闲地在散步，探寻喜洲白族民居的生活文与化，享受一段古朴悠闲的慢时光<br>
+                18:00 乘车前往餐厅 <br>
+                18:30 爱膳菌锅锅享用晚餐
               </p>
               <p class="bigTit" style="padding-top: .4rem;">用餐</p>
               <p style="padding-top: .3rem;">
@@ -170,22 +163,22 @@
             <div class="con-text" v-if="active==3">
               <p class="bigTit">行程安排</p>
               <p style="padding-top: .3rem;">
-                07:40 希尔顿酒店上车，前往游船码头(车程:酒店到码头11KM，30分 钟左右)。<br> 
-                08:10 抵达大理洱海游船码头。 <br>
-                08:20 乘坐洱海游轮(准时发船)，回过头来看苍山，依山而建的房子整 整齐齐的依偎在苍山的怀抱中。 <br>
-                10:20 洱海公园自由活动，这个沿湖的城市公园，在蓝天白云的映衬下， 苍山、洱海，一路好风光，停靠洱海边拍美美的照片，放松心情，留下美好回忆。<br> 
-                11:30 乘车前往餐厅(车程:洱海公园到餐厅5.5KM，约15分钟)。 <br>
-                12:00 益恒酒楼享用午餐。 <br>
-                13:30 前往洱海边的一处精华的路段:才村码头-马久邑-富美邑-磻溪网 红S弯-玫瑰庄园(车程:餐厅到才村码头14KM，30分钟左右)。 <br>
-                14:00 在教练的指导下，与海为邻，蓝天白云下的五彩田野、苍山、洱 海，尽情享受骑行的乐趣吧;享受绝色美景的同时，也和同事拍美美的照片。<br> 16:00 骑行抵达农场(骑行:才村码头到农场12KM，2小时左右)。<br> 
-                16:00 亲手制作鲜花饼，一同参与，一同收获，不仅能了解鲜花饼的制作 方法，还能品尝到饱含辛勤劳动后的美味;体验一场农场下午茶。 <br>
-                18:00 乘车前往餐厅(车程:农场到餐厅8.5KM，约15分钟)。 <br>
-                18:20 水上人家民俗音乐餐厅(古城)享用晚餐。 <br>
+                07:40 希尔顿酒店上车，前往游船码头<br> 
+                08:10 抵达大理洱海游船码头<br>
+                08:20 乘坐洱海游轮 <br>
+                10:20 洱海公园自由活动<br> 
+                11:30 乘车前往餐厅 <br>
+                12:00 益恒酒楼享用午餐 <br>
+                13:30 前往洱海边的一处精华的路段:才村码头-马久邑-富美邑-磻溪网 红S弯-玫瑰庄园<br>
+                14:00 在教练的指导下，与海为邻，蓝天白云下的五彩田野、苍山、洱海，尽情享受骑行的乐趣吧;享受绝色美景的同时，也和同事拍美美的照片。<br> 
+                16:00 骑行抵达农场，亲手制作鲜花饼<br>
+                18:00 乘车前往餐厅 <br>
+                18:20 水上人家民俗音乐餐厅(古城)享用晚餐 <br>
                 19:30 送回酒店或部分客人送古城。
               </p>
               <p class="bigTit" style="padding-top: .4rem;">用餐</p>
               <p style="padding-top: .3rem;">
-                早餐：酒店用餐  <br>
+                早餐：酒店用餐 <br>
                 午餐：当地特色 <br>
                 晚餐：当地特色
               </p>
@@ -193,8 +186,12 @@
             <div class="con-text" v-if="active==4">
               <p class="bigTit">行程安排</p>
               <p style="padding-top: .3rem;">中午12点之前退房，离店返回各地</p>
-              <p class="bigTit" style="padding-top: .4rem;">行程安排</p>
-              <p style="padding-top: .3rem;">早餐：酒店用餐<br>午餐：敬请自理<br>晚餐：敬请自理</p>
+              <p class="bigTit" style="padding-top: .4rem;">用餐</p>
+              <p style="padding-top: .3rem;">
+                早餐：酒店用餐<br>
+                午餐：敬请自理<br>
+                晚餐：敬请自理
+              </p>
             </div>
           </div>
         </div>
@@ -279,6 +276,15 @@
         },
         gotoSignup(){
           let self = this
+          if(self.menu.tijiaoxinxi==0){
+            layer.open({
+                type: 1,
+                content: $('.endedLayer').html(),
+                shade: 'background-color: rgba(0,0,0,.8)', //自定义遮罩的透明度
+                style: 'background:none; border:none;' //自定风格
+            });
+            return false
+          }
           ajaxGet(
             apipath + '/aoc/api/app/aocuser/get/' + self.openid, 
             {},
@@ -286,17 +292,10 @@
               console.log(res);
               if(res.status == 200){
                 self.info=res.results
-                if(self.info && self.info.isBm==1){
+                if(self.info && self.info.isBm==1) {
                   window.location.href='./signupSuc.html'
-                } else if(self.menu.tijiaoxinxi==1){
+                } else if(self.menu.tijiaoxinxi==1) {
                   window.location.href='./signup.html'
-                } else if(self.menu.tijiaoxinxi==0){
-                  layer.open({
-                      type: 1,
-                      content: $('.endedLayer').html(),
-                      shade: 'background-color: rgba(0,0,0,.8)', //自定义遮罩的透明度
-                      style: 'background:none; border:none;' //自定风格
-                  });
                 }
               } else {
                 layerMsg(res.msg);
@@ -310,6 +309,15 @@
         
         gotoPhoto(){
           let self = this
+          if(self.menu.chuangyiheyin==0) {
+            layer.open({
+              type: 1,
+              content: $('.signTip').html(),
+              shade: 'background-color: rgba(0,0,0,.8)', //自定义遮罩的透明度
+              style: 'background:none; border:none;' //自定风格
+            })
+            return false
+          }
           ajaxGet(
             apipath + '/aoc/api/app/aocuser/get/' + self.openid, 
             {},
