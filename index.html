@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="format-detection" content="email=no">
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Expires" content="0" />
+  <title>首页</title>
+  <script>
+    //rem
+    (function (doc, win) {
+      var docEl = doc.documentElement,
+        resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+        recalc = function () {
+          var clientWidth = docEl.clientWidth;
+          if (!clientWidth) return;
+          if (clientWidth >= 1080) {
+            docEl.style.fontSize = '100px';
+          } else {
+            docEl.style.fontSize = 100 * (clientWidth / 1080) + 'px';
+          }
+        };
+      if (!doc.addEventListener) return;
+      win.addEventListener(resizeEvt, recalc, false);
+      doc.addEventListener('DOMContentLoaded', recalc, false);
+    })(document, window);
+  </script>
+  
+  <script src="./js/jquery.min.js"></script>
+  <script src="./js/layer_mobile/layer.js"></script>
+  <script src="./js/util.js?v=20210404"></script>
+  <script src="./js/vue.min.js"></script>
+  <script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js "></script>
+  <script src="./js/share.js"></script>
+  
+  <link rel="stylesheet" href="./css/base.css?v=20210404">
+  <link rel="stylesheet" href="./css/signup.css?v=20210404">
+</head>
+<body>
+  <div class="signup-wrap" id="app" v-cloak>
+    <h1 class="logo-box">
+      <img src="./img/logo.png" class="logo-img" alt="">
+    </h1>
+    <div class="aoc-tit">
+      <img src="./img/AOC.png" class="aoc-img" alt="">
+      <p class="tit">渠道合作伙伴大会</p>
+      <p class="date">2021/04/07</p>
+    </div>
+    <div class="nav-list">
+      <ul>
+        <li class="nav-item" @click="gotoSignup">
+          <div class="link">
+            <img src="./img/icon01.png" alt="" class="icon">
+            <span class="con">提交信息</span>
+            <img src="./img/arr.png" alt="" class="arr">
+          </div>
+        </li>
+        <li class="nav-item" @click="gotoPhoto">
+          <div class="link">
+            <img src="./img/icon02.png" alt="" class="icon">
+            <span class="con">创意签到</span>
+            <img src="./img/arr.png" alt="" class="arr">
+          </div>
+        </li>
+        <li class="nav-item" @click="gotoAlbum">
+          <div class="link">
+            <img src="./img/icon03.png" alt="" class="icon">
+            <span class="con">云相册</span>
+            <img src="./img/arr.png" alt="" class="arr">
+          </div>
+        </li>
+        <li class="nav-item" @click="gotoTrip">
+          <div class="link">
+            <img src="./img/icon04.png" alt="" class="icon">
+            <span class="con">行程安排</span>
+            <img src="./img/arr.png" alt="" class="arr">
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="notStartedLayer" style="display: none;">
+      <div class="notStart-con" >
+        <p class="tip-text">活动尚未开始</p>
+        <i class="close"></i>
+      </div>
+    </div>
+    <div class="endedLayer" style="display: none;">
+      <div class="notStart-con" >
+        <p class="tip-text">报名已结束</p>
+        <i class="close"></i>
+      </div>
+    </div>
+    <div class="signTip" style="display: none;">
+      <div class="notStart-con">
+        <p class="tip-text sign-tip">请至大理实力希尔顿酒店<br>大堂会议接待处签到</p>
+        <i class="close"></i>
+      </div>
+    </div>
+    <div class="tripLayer" v-if="tripLayerShow">
+      <div class="tripLayer-con">
+        <div class="trip-tab">
+          <div class="dateTabs">
+            <span v-for="(item,index) in dateList" @click="dateTabClick(index)" :class="index==active?'active':''">{{item.value}}</span>
+          </div>
+          <div class="tabcons">
+            <div class="con-text" v-if="active==0">
+              <p class="bigTit">行程安排</p>
+              <p style="padding-top: .3rem;">大理实力希尔顿酒店酒店</p> 
+              <p>地址：中国云南省大理市七里桥感通路以南 </p>
+              <p>酒店总机：+86-872-6688888</p>
+              <p class="bigTit" style="padding-top: .4rem;">用餐</p>
+              <p style="padding-top: .3rem;">晚餐：三楼香山厅 </p>
+              <p>用餐时间：17:30-21:00</p>
+            </div>
+            <div class="con-text" v-if="active==1">
+              <p class="bigTit">行程安排</p>
+              <p>
+                8:30-9:00 签到 <br>
+                9:00-9:05 开场视频 <br>
+                9:05-9:15 主持人开场 <br>
+                9:15-9:40 领导致辞 <br>
+                9:40-11:00 AVC显示器/商显行业分析 <br>
+                11:00-11:10 茶歇 <br>
+                11:10-12:00 2021 AOC全屏战略规划 <br>
+                12:00-13:30 午餐(酒店自助) <br>
+                13:30-14:10 AOC显示器B2C及电商行销策略 <br>
+                14:10-14:50 AOC显示器B2B行销策略 <br>
+                14:50-15:30 AOC商用大屏行销策略 <br>
+                15:30-15:40 茶歇 <br>
+                15:40-16:10 AOC TV行销策略 <br>
+                16:10-16:40 AOC外设行销策略 <br>
+                16:40-17:00 互动环节 <br>
+                17:00-18:00 颁奖表彰 <br>
+                18:00:00 渠道会闭幕 
+              </p>
+              <p class="bigTit" style="padding-top: .4rem;">用餐</p>
+              <p style="padding-top: .3rem;">
+                早餐：三楼香山厅  <br>
+                午餐：三楼香山厅 <br>
+                晚餐：五楼苍山厅
+              </p>
+            </div>
+            <div class="con-text" v-if="active==2">
+              <p class="bigTit">行程安排</p>
+              <p style="padding-top: .3rem;">
+                09:00 希尔顿酒店出发前往苍山(车程:酒店到苍山8KM，约15分钟)。<br>
+                09:30 乘坐洗马潭索道，一路风光无限，可以从空中看到洱海壮观的全貌;打开身体感官探索大自然，贴近自然。<br>
+                11:30 下山，乘车前往餐厅(车程:苍山到餐厅5KM，约15分钟)。<br>
+                12:00 松梅园享用午餐 <br>
+                13:30 前往一处白族人家的院子(车程:餐厅到周城蓝染体验地45KM，约1小时) <br>
+                14:00 了解白族非遗—【蓝染的工艺和文化】体验蓝染的魅力，亲手制作，通过蓝染，让我们一起学习古村落智慧。 <br>
+                16:00 乘车前往喜洲古镇(车程:蓝染体验地到喜洲古镇8KM，约15分钟) <br>
+                16:30 在喜洲古镇里悠闲地在散步，探寻喜洲白族民居的生活文与化，享受一段古朴悠闲的慢时光。(喜洲古镇打卡点:1，严家大院+外围网红墙 2，破旧白族房子3，题名坊 4，舌尖上的中国喜洲粑粑拍摄地) <br>
+                18:00 乘车前往餐厅(车程:喜洲古镇到餐厅20KM，约30分钟) <br>
+                18:30 爱膳菌锅锅享用晚餐(安排大理白族歌舞表演+敬酒歌)
+              </p>
+              <p class="bigTit" style="padding-top: .4rem;">用餐</p>
+              <p style="padding-top: .3rem;">
+                早餐：酒店自助 <br>
+                午餐：当地特色 <br>
+                晚餐：当地特色
+              </p>
+            </div>
+            <div class="con-text" v-if="active==3">
+              <p class="bigTit">行程安排</p>
+              <p style="padding-top: .3rem;">
+                07:40 希尔顿酒店上车，前往游船码头(车程:酒店到码头11KM，30分 钟左右)。<br> 
+                08:10 抵达大理洱海游船码头。 <br>
+                08:20 乘坐洱海游轮(准时发船)，回过头来看苍山，依山而建的房子整 整齐齐的依偎在苍山的怀抱中。 <br>
+                10:20 洱海公园自由活动，这个沿湖的城市公园，在蓝天白云的映衬下， 苍山、洱海，一路好风光，停靠洱海边拍美美的照片，放松心情，留下美好回忆。<br> 
+                11:30 乘车前往餐厅(车程:洱海公园到餐厅5.5KM，约15分钟)。 <br>
+                12:00 益恒酒楼享用午餐。 <br>
+                13:30 前往洱海边的一处精华的路段:才村码头-马久邑-富美邑-磻溪网 红S弯-玫瑰庄园(车程:餐厅到才村码头14KM，30分钟左右)。 <br>
+                14:00 在教练的指导下，与海为邻，蓝天白云下的五彩田野、苍山、洱 海，尽情享受骑行的乐趣吧;享受绝色美景的同时，也和同事拍美美的照片。<br> 16:00 骑行抵达农场(骑行:才村码头到农场12KM，2小时左右)。<br> 
+                16:00 亲手制作鲜花饼，一同参与，一同收获，不仅能了解鲜花饼的制作 方法，还能品尝到饱含辛勤劳动后的美味;体验一场农场下午茶。 <br>
+                18:00 乘车前往餐厅(车程:农场到餐厅8.5KM，约15分钟)。 <br>
+                18:20 水上人家民俗音乐餐厅(古城)享用晚餐。 <br>
+                19:30 送回酒店或部分客人送古城。
+              </p>
+              <p class="bigTit" style="padding-top: .4rem;">用餐</p>
+              <p style="padding-top: .3rem;">
+                早餐：酒店用餐  <br>
+                午餐：当地特色 <br>
+                晚餐：当地特色
+              </p>
+            </div>
+            <div class="con-text" v-if="active==4">
+              <p class="bigTit">行程安排</p>
+              <p style="padding-top: .3rem;">中午12点之前退房，离店返回各地</p>
+              <p class="bigTit" style="padding-top: .4rem;">行程安排</p>
+              <p style="padding-top: .3rem;">早餐：酒店用餐<br>午餐：敬请自理<br>晚餐：敬请自理</p>
+            </div>
+          </div>
+        </div>
+        <i class="close" @click="tripLayerShow=false"></i>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    var vm = new Vue({
+      el: '#app',
+      data: {
+        openid: '',
+        menu:{
+          // sid: "E3944FC892AC11EBA15800163E32A83E",
+          // chuangyiheyin: 0,
+          // tijiaoxinxi: 0,
+          // yunxiangche: 0
+        },
+        info:{
+          // "sid": "A371F57B926711EBA15800163E32A83E",
+          // "nickname": "杜爱枝",
+          // "headImg": "https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTJM33scbPPPvpP94WswdD9hwyVgDB71FiaYz8jMDdEs3nDO2JkmGnKs9dSV8ucRF72Y1A1ZyCZb0hw/132",
+          // "openid": "oarFBv5e9Up-N7f4SIDdIDCHgF7A",
+          // "seatid": 0,
+          // "realname": "杜爱枝",
+          // "mobile": "13622221111",
+          // "company": "社会",
+          // "position": "额呵呵",
+          // "photoName": "",
+          // "photoHeader": "",
+          // "isBm": "1",
+          // "isQd": "0"
+        },
+        dateList:[
+          {
+            value: '4月6日'
+          },
+          {
+            value: '4月7日'
+          },
+          {
+            value: '4月8日'
+          },
+          {
+            value: '4月9日'
+          },
+          {
+            value: '4月10日'
+          },
+        ],
+        tripLayerShow: false,
+        active: 0
+      },
+      created: function () {
+        this.openid = getOpenid()
+        setLoc('openid', this.openid)
+        console.log(this.openid)
+        this.getMenu()
+      },
+      mounted: function () {
+        $(document).on('click', '.close', function() {
+          layer.closeAll()
+        });
+      },
+      methods: {
+        getMenu(){
+          let self = this
+          ajaxGet(
+            apipath + '/aoc/api/app/aocjindu/get', 
+            {},
+            function (res) {
+              console.log(res);
+              if(res.status == 200){
+                self.menu=res.results
+              }
+            },
+            function (res) {
+              console.log(res);
+            }
+          )
+        },
+        gotoSignup(){
+          let self = this
+          ajaxGet(
+            apipath + '/aoc/api/app/aocuser/get/' + self.openid, 
+            {},
+            function (res) {
+              console.log(res);
+              if(res.status == 200){
+                self.info=res.results
+                if(self.info && self.info.isBm==1){
+                  window.location.href='./signupSuc.html'
+                } else if(self.menu.tijiaoxinxi==1){
+                  window.location.href='./signup.html'
+                } else if(self.menu.tijiaoxinxi==0){
+                  layer.open({
+                      type: 1,
+                      content: $('.endedLayer').html(),
+                      shade: 'background-color: rgba(0,0,0,.8)', //自定义遮罩的透明度
+                      style: 'background:none; border:none;' //自定风格
+                  });
+                }
+              } else {
+                layerMsg(res.msg);
+              }
+            },
+            function (res) {
+              console.log(res);
+            }
+          )
+        },
+        
+        gotoPhoto(){
+          let self = this
+          ajaxGet(
+            apipath + '/aoc/api/app/aocuser/get/' + self.openid, 
+            {},
+            function (res) {
+              console.log('aocuser/get==',res);
+              if(res.status == 200){
+                self.info = res.results
+                if(self.info && self.info.isQd==1){
+                  window.location.href='./creatSign.html'
+                } else {
+                  layer.open({
+                    type: 1,
+                    content: $('.signTip').html(),
+                    shade: 'background-color: rgba(0,0,0,.8)', //自定义遮罩的透明度
+                    style: 'background:none; border:none;' //自定风格
+                  })
+                }
+              } else {
+                layerMsg(res.msg);
+              }
+            },
+            function (res) {
+              console.log(res);
+            }
+          )
+        },
+        gotoAlbum(){
+          if(this.menu.yunxiangche==1){
+            window.location.href='./cloudAlbum.html'
+          } else {
+            layer.open({
+              type: 1,
+              content: $('.notStartedLayer').html(),
+              shade: 'background-color: rgba(0,0,0,.8)', //自定义遮罩的透明度
+              style: 'background:none; border:none;' //自定风格
+            });
+          }
+        },
+        gotoTrip(){
+          this.tripLayerShow = true
+        },
+        dateTabClick(index){
+          console.log(index)
+          this.active = index
+        }
+      }
+    })
+    
+  </script>
+</body>
+</html>

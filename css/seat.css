@@ -1,0 +1,140 @@
+.seat-wrap{
+  position: relative;
+  width: 38.4rem;
+  height: 21.6rem;
+  background-image: url(../img/seat-bg.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+.head-list{
+  position: relative;
+}
+.head-list .head-item{
+  width: 1.36rem;
+  height: .94rem;
+  position: absolute;
+}
+.head-list .head-item .head-box{
+  width: 1.36rem;
+  height: .94rem;
+  position: absolute;
+  z-index: 9;
+  background: #fff;
+}
+.head-list .head-item .head-box .head-img{
+  width: 100%;
+  height: 100%;
+  vertical-align: top;
+}
+
+.yun-top{
+  position: absolute;
+  z-index: 99;
+  width: 38.4rem;
+  height: 21.6rem;
+  left: 0;
+  top: 0;
+  background-image: url(../img/yun-top.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+
+.seat-list{
+  position: relative;
+}
+.seat-list .seat-item{
+  width: 1.36rem;
+  height: .94rem;
+  position: absolute;
+  z-index: 999;
+}
+.seat-list .seat-item .signText-box{
+  position: absolute;
+  z-index: 999;
+  width: 3.18rem;
+  height: 1.5rem;
+  left: -0.95rem;
+  top: -1.5rem;
+  background-color: #fff;
+  overflow: hidden;
+  border-radius: .08rem;
+}
+.seat-list .seat-item .signText-box .signText-img{
+  width: 100%;
+  vertical-align: top;
+}
+
+.startSign{
+  position: absolute;
+  width: 8.36rem;
+  height: 2.73rem;
+  background-image: url(../img/startSignBtn.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  bottom: .5rem;
+  right: 0;
+  z-index: 100;
+}
+
+/* 选座 */
+.choose-mask{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  background-color: rgba(13, 86, 159, 0.32);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.choose-tip{
+  width: 11.96rem;
+  height: 8.33rem;
+  background-image: url(../img/choose-tip.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+}
+.choose-tip .tip-btn{
+  width: 4.43rem;
+  height: 1.36rem;
+  background-image: url(../img/choose-tip-btn.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin-top: 5.08rem;
+}
+.confirm-tip{
+  width: 11.96rem;
+  height: 8.33rem;
+  background-image: url(../img/confirmSeat-tip.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: flex;
+  justify-content: center;
+}
+.confirm-tip .btn{
+  width: 4.43rem;
+  height: 1.36rem;
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin-top: 5.08rem;
+}
+.confirm-tip .btn1{
+  background-image: url(../img/confirmSeat-btn1.png);
+}
+.confirm-tip .btn2{
+  background-image: url(../img/confirmSeat-btn2.png);
+  margin-left: .32rem;
+}
+.signSuc-tip{
+  width: 13.48rem;
+  height: 9.36rem;
+  background-image: url(../img/signSuc-tip.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+}

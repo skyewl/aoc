@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="format-detection" content="email=no">
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Expires" content="0" />
+  <title>座位</title>
+
+  <script>
+    //rem
+    (function (doc, win) {
+      var docEl = doc.documentElement,
+        resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+        recalc = function () {
+          var clientWidth = docEl.clientWidth;
+          var clientHeight = docEl.clientHeight;
+          if (!clientWidth) return;
+          docEl.style.fontSize = 100 * (clientHeight / 3840) + 'px';
+          // if (clientHeight >= 3840) {
+          //   docEl.style.fontSize = '100px';
+          // } else {
+          //   docEl.style.fontSize = 100 * (clientHeight / 3840) + 'px';
+          // }
+        };
+      if (!doc.addEventListener) return;
+      // win.addEventListener(resizeEvt, recalc, false);
+      doc.addEventListener('DOMContentLoaded', recalc, false);
+    })(document, window);
+  </script>
+  <script src="./js/jquery.min.js"></script>
+  <script src="./js/layer_mobile/layer.js"></script>
+  <script src="./js/util.js"></script>
+  <script src="./js/vue.min.js"></script>
+  <script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js "></script>
+  <script src="./js/share.js"></script>
+
+  <link rel="stylesheet" href="./css/base.css">
+  <link rel="stylesheet" href="./css/seat.css?v=2021040419">
+  
+  <style>
+    body {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+    }
+    @media screen and (orientation: portrait) {
+      .wrap {
+        position: absolute;
+        width: 100vh;
+        height: 100vw;
+        top: 0;
+        left: 100vw;
+        -webkit-transform: rotate(90deg);
+        -moz-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        transform: rotate(90deg);
+        transform-origin: 0% 0%;
+      }
+    }
+    @media screen and (orientation: landscape) {
+      .wrap {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+      }
+    }
+    .portrait-mask{
+      background-color: rgba(0, 0, 0,0.361);
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 999999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .portrait-mask .portrait-tip{
+      width: 3.58rem;
+      height: 4.53rem;
+      background-image: url(./img/portrait-tip.png);
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    .portrait-mask .swipeup-tip{
+      width: 6.42rem;
+      height: 4.97rem;
+      background-image: url(./img/swipeup-tip.png);
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    .location{
+      width: 1.6rem;
+      height: 1.2rem;
+      position: absolute;
+      background-image: url(./img/location.png);
+      background-repeat: no-repeat;
+      background-size: cover;
+      z-index: 9999;
+      margin-top: -0.12rem;
+      margin-left: -0.12rem;
+    }
+
+    .bounce-enter-active {
+      animation: bounce-in .5s;
+    }
+    .bounce-leave-active {
+      animation: bounce-in .5s reverse;
+    }
+    @keyframes bounce-in {
+      0% {
+        transform: scale(0);
+      }
+      50% {
+        transform: scale(1.5);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <section class="wrap" id="app" v-cloak>
+    <div class="seat-wrap">
+      <ul class="head-list">
+        <li class="head-item" v-for="(item, index) in seatList" :style="{top: item.top,left: item.left}">
+          <div class="head-box">
+            <img v-if="item.photoHeader" :src="item.photoHeader" class="head-img" alt="">
+          </div>
+        </li>
+      </ul>
+      <div class="yun-top"></div>
+      <ul class="seat-list">
+        <li class="seat-item" v-for="(item, index) in seatList" :style="{top: item.top,left: item.left}" @click="clickSeat(index)" >
+          <div class="signText-box" v-if="item.check">
+            <img class="signText-img" :src="checkSignImg" alt="">
+          </div>
+        </li>
+      </ul>
+      <div class="location" :style="{top: loctionSeat.top, left: loctionSeat.left}" @click="swipeupTip" @touchmove.once="touchmove"></div>
+    </div>
+    <div class="portrait-mask" v-show="portraitTipShow" @click="portraitTipShow=false">
+      <div class="portrait-tip"></div>
+    </div>
+    <div class="portrait-mask" v-show="swipeupTipShow" @click="swipeupTipShow=false">
+      <div class="swipeup-tip"></div>
+    </div>
+
+  </section>
+  <script>
+    var vm = new Vue({
+      el: '#app',
+      data: {
+        openid: '',
+        swipeupTipShow: false,
+        portraitTipShow: true,
+        seatList: [{
+            seatid: 1,
+            photoHeader: '',
+            top: '1.65rem',
+            left: '19.26rem',
+          },
+          {
+            seatid: 2,
+            photoHeader: '',
+            top: '1.65rem',
+            left: '20.62rem',
+          },
+          {
+            seatid: 3,
+            photoHeader: '',
+            top: '2.87rem',
+            left: '16rem',
+
+          },
+          {
+            seatid: 4,
+            photoHeader: '',
+            left: '17.31rem',
+            top: '2.87rem',
+
+          },
+          {
+            seatid: 5,
+            photoHeader: '',
+            left: '18.61rem',
+            top: '2.87rem',
+
+          }, 
+          {
+            seatid: 6,
+            photoHeader: '',
+            left: '19.91rem',
+            top: '2.87rem',
+
+          }, 
+          {
+            seatid: 7,
+            photoHeader: '',
+            left: '21.21rem',
+            top: '2.87rem',
+
+          }, 
+          {
+            seatid: 8,
+            photoHeader: '',
+            left: '22.46rem',
+            top: '2.87rem',
+
+          }, 
+          {
+            seatid: 9,
+            photoHeader: '',
+            left: '14.11rem',
+            top: '4.18rem',
+
+          }, 
+          {
+            seatid: 10,
+            photoHeader: '',
+            left: '15.38rem',
+            top: '4.18rem',
+
+          }, {
+            seatid: 11,
+            photoHeader: '',
+            left: '16.66rem',
+            top: '4.18rem',
+
+          },
+          {
+            seatid: 12,
+            photoHeader: '',
+            left: '17.98rem',
+            top: '4.18rem',
+          },
+          {
+            seatid: 13,
+            photoHeader: '',
+            left: '19.28rem',
+            top: '4.18rem',
+
+          },
+          {
+            seatid: 14,
+            photoHeader: '',
+            left: '20.55rem',
+            top: '4.18rem',
+          }, 
+          {
+            seatid: 15,
+            photoHeader: '',
+            left: '21.84rem',
+            top: '4.18rem',
+          }, 
+          {
+            seatid: 16,
+            photoHeader: '',
+            left: '23.10rem',
+            top: '4.18rem',
+          }, 
+          {
+            seatid: 17,
+            photoHeader: '',
+            left: '24.39rem',
+            top: '4.18rem',
+          },
+          {
+            seatid: 18,
+            photoHeader: '',
+            left: '13.51rem',
+            top: '5.44rem',
+          },
+          {
+            seatid: 19,
+            photoHeader: '',
+            left: '14.75rem',
+            top: '5.44rem',
+
+          },
+          {
+            seatid: 20,
+            photoHeader: '',
+            left: '16.05rem',
+            top: '5.44rem',
+
+          },
+          {
+            seatid: 21,
+            photoHeader: '',
+            left: '17.35rem',
+            top: '5.44rem',
+
+          },
+          {
+            seatid: 22,
+            photoHeader: '',
+            left: '18.61rem',
+            top: '5.44rem',
+
+          },
+          {
+            seatid: 23,
+            photoHeader: '',
+            left: '19.89rem',
+            top: '5.44rem',
+
+          },
+          {
+            seatid: 24,
+            photoHeader: '',
+            left: '21.19rem',
+            top: '5.44rem',
+
+          },
+          {
+            seatid: 25,
+            photoHeader: '',
+            left: '22.49rem',
+            top: '5.44rem',
+
+          },
+          {
+            seatid: 26,
+            photoHeader: '',
+            left: '23.78rem',
+            top: '5.44rem',
+
+          },
+          {
+            seatid: 27,
+            photoHeader: '',
+            left: '25.08rem',
+            top: '5.44rem',
+
+          },
+
+          {
+            seatid: 28,
+            photoHeader: '',
+            left: '12.89rem',
+            top: '6.74rem',
+
+          },
+          {
+            seatid: 29,
+            photoHeader: '',
+            left: '14.16rem',
+            top: '6.74rem',
+
+          },
+          {
+            seatid: 30,
+            photoHeader: '',
+            left: '15.45rem',
+            top: '6.74rem',
+
+          },
+          {
+            seatid: 31,
+            photoHeader: '',
+            left: '16.73rem',
+            top: '6.74rem',
+
+          },
+          {
+            seatid: 32,
+            photoHeader: '',
+            left: '18.03rem',
+            top: '6.74rem',
+
+          },
+          {
+            seatid: 33,
+            photoHeader: '',
+            left: '19.29rem',
+            top: '6.74rem',
+
+          },
+          {
+            seatid: 34,
+            photoHeader: '',
+            left: '20.58rem',
+            top: '6.74rem',
+
+          },
+          {
+            seatid: 35,
+            photoHeader: '',
+            left: '21.87rem',
+            top: '6.74rem',
+
+          },
+          {
+            seatid: 36,
+            photoHeader: '',
+            left: '23.14rem',
+            top: '6.74rem',
+
+          },
+          {
+            seatid: 37,
+            photoHeader: '',
+            left: '24.48rem',
+            top: '6.74rem',
+
+          },
+          {
+            seatid: 38,
+            photoHeader: '',
+            left: '25.75rem',
+            top: '6.74rem',
+
+          },
+
+          {
+            seatid: 39,
+            photoHeader: '',
+            left: '9.62rem',
+            top: '7.93rem',
+
+          },
+          {
+            seatid: 40,
+            photoHeader: '',
+            left: '10.92rem',
+            top: '7.93rem',
+
+          },
+          {
+            seatid: 41,
+            photoHeader: '',
+            left: '12.23rem',
+            top: '7.93rem',
+
+          },
+          {
+            seatid: 42,
+            photoHeader: '',
+            left: '13.55rem',
+            top: '7.93rem',
+
+          },
+          {
+            seatid: 43,
+            photoHeader: '',
+            left: '14.82rem',
+            top: '7.93rem',
+
+          },
+          {
+            seatid: 44,
+            photoHeader: '',
+            left: '16.11rem',
+            top: '7.93rem',
+
+          },
+          {
+            seatid: 45,
+            photoHeader: '',
+            left: '17.41rem',
+            top: '7.93rem',
+
+          },
+          {
+            seatid: 46,
+            photoHeader: '',
+            left: '18.68rem',
+            top: '7.93rem',
+
+          },
+          {
+            seatid: 47,
+            photoHeader: '',
+            left: '19.97rem',
+            top: '7.93rem',
+
+          },
+          {
+            seatid: 48,
+            photoHeader: '',
+            left: '21.28rem',
+            top: '7.93rem',
+
+          },
+          {
+            seatid: 49,
+            photoHeader: '',
+            left: '22.54rem',
+            top: '7.93rem',
+
+          },
+          {
+            seatid: 50,
+            photoHeader: '',
+            left: '23.84rem',
+            top: '7.93rem',
+
+          },
+          {
+            seatid: 51,
+            photoHeader: '',
+            left: '25.12rem',
+            top: '7.93rem',
+
+          },
+          {
+            seatid: 52,
+            photoHeader: '',
+            left: '26.42rem',
+            top: '7.93rem',
+
+          },
+          {
+            seatid: 53,
+            photoHeader: '',
+            left: '8.98rem',
+            top: '9.17rem',
+
+          },
+          {
+            seatid: 54,
+            photoHeader: '',
+            left: '10.28rem',
+            top: '9.17rem',
+
+          },
+          {
+            seatid: 55,
+            photoHeader: '',
+            left: '11.54rem',
+            top: '9.17rem',
+
+          },
+          {
+            seatid: 56,
+            photoHeader: '',
+            left: '12.85rem',
+            top: '9.17rem',
+
+          },
+          {
+            seatid: 57,
+            photoHeader: '',
+            left: '14.12rem',
+            top: '9.17rem',
+
+          },
+          {
+            seatid: 58,
+            photoHeader: '',
+            left: '15.42rem',
+            top: '9.17rem',
+
+          },
+          {
+            seatid: 59,
+            photoHeader: '',
+            left: '16.69rem',
+            top: '9.17rem',
+
+          },
+          {
+            seatid: 60,
+            photoHeader: '',
+            left: '17.97rem',
+            top: '9.17rem',
+
+          },
+          {
+            seatid: 61,
+            photoHeader: '',
+            left: '19.26rem',
+            top: '9.17rem',
+
+          },
+          {
+            seatid: 62,
+            photoHeader: '',
+            left: '20.57rem',
+            top: '9.17rem',
+
+          },
+          {
+            seatid: 63,
+            photoHeader: '',
+            left: '21.84rem',
+            top: '9.17rem',
+
+          },
+          {
+            seatid: 64,
+            photoHeader: '',
+            left: '23.16rem',
+            top: '9.17rem',
+
+          },
+          {
+            seatid: 65,
+            photoHeader: '',
+            left: '24.42rem',
+            top: '9.17rem',
+
+          },
+          {
+            seatid: 66,
+            photoHeader: '',
+            left: '25.72rem',
+            top: '9.17rem',
+
+          },
+          {
+            seatid: 67,
+            photoHeader: '',
+            left: '27.03rem',
+            top: '9.17rem',
+
+          },
+          {
+            seatid: 68,
+            photoHeader: '',
+            left: '28.33rem',
+            top: '9.17rem',
+
+          },
+          {
+            seatid: 69,
+            photoHeader: '',
+            left: '29.61rem',
+            top: '9.17rem',
+
+          },
+          {
+            seatid: 70,
+            photoHeader: '',
+            left: '8.41rem',
+            top: '10.45rem',
+
+          },
+          {
+            seatid: 71,
+            photoHeader: '',
+            left: '9.67rem',
+            top: '10.45rem',
+
+          },
+          {
+            seatid: 72,
+            photoHeader: '',
+            left: '10.98rem',
+            top: '10.45rem',
+
+          },
+          {
+            seatid: 73,
+            photoHeader: '',
+            left: '12.25rem',
+            top: '10.45rem',
+
+          },
+          {
+            seatid: 74,
+            photoHeader: '',
+            left: '13.55rem',
+            top: '10.45rem',
+
+          },
+          {
+            seatid: 75,
+            photoHeader: '',
+            left: '14.79rem',
+            top: '10.45rem',
+
+          },
+          {
+            seatid: 76,
+            photoHeader: '',
+            left: '16.03rem',
+            top: '10.45rem',
+
+          },
+          {
+            seatid: 77,
+            photoHeader: '',
+            left: '17.33rem',
+            top: '10.45rem',
+
+          },
+          {
+            seatid: 78,
+            photoHeader: '',
+            left: '18.65rem',
+            top: '10.45rem',
+
+          },
+          {
+            seatid: 79,
+            photoHeader: '',
+            left: '19.98rem',
+            top: '10.45rem',
+
+          },
+          {
+            seatid: 80,
+            photoHeader: '',
+            left: '21.29rem',
+            top: '10.45rem',
+
+          },
+          {
+            seatid: 81,
+            photoHeader: '',
+            left: '22.58rem',
+            top: '10.45rem',
+
+          },
+          {
+            seatid: 82,
+            photoHeader: '',
+            left: '23.84rem',
+            top: '10.45rem',
+
+          },
+          {
+            seatid: 83,
+            photoHeader: '',
+            left: '25.14rem',
+            top: '10.45rem',
+
+          },
+          {
+            seatid: 84,
+            photoHeader: '',
+            left: '26.45rem',
+            top: '10.45rem',
+
+          },
+          {
+            seatid: 85,
+            photoHeader: '',
+            left: '27.72rem',
+            top: '10.45rem',
+
+          },
+          {
+            seatid: 86,
+            photoHeader: '',
+            left: '29.02rem',
+            top: '10.45rem',
+
+          },
+          {
+            seatid: 87,
+            photoHeader: '',
+            left: '30.31rem',
+            top: '10.45rem',
+
+          },
+          {
+            seatid: 88,
+            photoHeader: '',
+            left: '31.57rem',
+            top: '10.45rem',
+
+          },
+          {
+            seatid: 89,
+            photoHeader: '',
+            left: '5.09rem',
+            top: '11.78rem',
+
+          },
+          {
+            seatid: 90,
+            photoHeader: '',
+            left: '6.37rem',
+            top: '11.78rem',
+
+          },
+          {
+            seatid: 91,
+            photoHeader: '',
+            left: '7.67rem',
+            top: '11.78rem',
+
+          },
+          {
+            seatid: 92,
+            photoHeader: '',
+            left: '8.99rem',
+            top: '11.78rem',
+
+          },
+          {
+            seatid: 93,
+            photoHeader: '',
+            left: '10.28rem',
+            top: '11.78rem',
+
+          },
+          {
+            seatid: 94,
+            photoHeader: '',
+            left: '11.56rem',
+            top: '11.78rem',
+
+          },
+          {
+            seatid: 95,
+            photoHeader: '',
+            left: '12.85rem',
+            top: '11.78rem',
+
+          },
+          {
+            seatid: 96,
+            photoHeader: '',
+            left: '14.16rem',
+            top: '11.78rem',
+
+          },
+          {
+            seatid: 97,
+            photoHeader: '',
+            left: '15.45rem',
+            top: '11.78rem',
+
+          },
+          {
+            seatid: 98,
+            photoHeader: '',
+            left: '16.69rem',
+            top: '11.78rem',
+
+          },
+          {
+            seatid: 99,
+            photoHeader: '',
+            left: '17.97rem',
+            top: '11.78rem',
+            notSeat: true
+          },
+          {
+            seatid: 100,
+            photoHeader: '',
+            left: '19.28rem',
+            top: '11.78rem',
+            notSeat: true
+          },
+          {
+            seatid: 101,
+            photoHeader: '',
+            left: '20.57rem',
+            top: '11.78rem',
+            notSeat: true
+          },
+          {
+            seatid: 102,
+            photoHeader: '',
+            left: '21.85rem',
+            top: '11.78rem',
+
+          },
+          {
+            seatid: 103,
+            photoHeader: '',
+            left: '23.16rem',
+            top: '11.78rem',
+
+          },
+          {
+            seatid: 104,
+            photoHeader: '',
+            left: '24.44rem',
+            top: '11.78rem',
+
+          },
+          {
+            seatid: 105,
+            photoHeader: '',
+            left: '25.74rem',
+            top: '11.78rem',
+
+          },
+          {
+            seatid: 106,
+            photoHeader: '',
+            left: '27.03rem',
+            top: '11.78rem',
+
+          },
+          {
+            seatid: 107,
+            photoHeader: '',
+            left: '28.33rem',
+            top: '11.78rem',
+
+          },
+          {
+            seatid: 108,
+            photoHeader: '',
+            left: '29.66rem',
+            top: '11.78rem',
+
+          },
+          {
+            seatid: 109,
+            photoHeader: '',
+            left: '30.94rem',
+            top: '11.78rem',
+
+          },
+          {
+            seatid: 110,
+            photoHeader: '',
+            left: '32.22rem',
+            top: '11.78rem',
+
+          },
+          {
+            seatid: 111,
+            photoHeader: '',
+            left: '4.40rem',
+            top: '13.18rem',
+
+          },
+          {
+            seatid: 112,
+            photoHeader: '',
+            left: '5.70rem',
+            top: '13.18rem',
+
+          },
+          {
+            seatid: 113,
+            photoHeader: '',
+            left: '7.02rem',
+            top: '13.18rem',
+
+          },
+          {
+            seatid: 114,
+            photoHeader: '',
+            left: '8.32rem',
+            top: '13.18rem',
+
+          },
+          {
+            seatid: 115,
+            photoHeader: '',
+            left: '9.59rem',
+            top: '13.18rem',
+
+          },
+          {
+            seatid: 116,
+            photoHeader: '',
+            left: '10.91rem',
+            top: '13.18rem',
+
+          },
+          {
+            seatid: 117,
+            photoHeader: '',
+            left: '12.18rem',
+            top: '13.18rem',
+
+          },
+          {
+            seatid: 118,
+            photoHeader: '',
+            left: '13.48rem',
+            top: '13.18rem',
+
+          },
+          {
+            seatid: 119,
+            photoHeader: '',
+            left: '14.78rem',
+            top: '13.18rem',
+
+          },
+          {
+            seatid: 120,
+            photoHeader: '',
+            left: '16.05rem',
+            top: '13.18rem',
+
+          },
+          {
+            seatid: 121,
+            photoHeader: '',
+            left: '17.34rem',
+            top: '13.18rem',
+
+          },
+          {
+            seatid: 122,
+            photoHeader: '',
+            left: '18.65rem',
+            top: '13.18rem',
+
+          },
+          {
+            seatid: 123,
+            photoHeader: '',
+            left: '19.91rem',
+            top: '13.18rem',
+
+          },
+          {
+            seatid: 124,
+            photoHeader: '',
+            left: '21.21rem',
+            top: '13.18rem',
+
+          },
+          {
+            seatid: 125,
+            photoHeader: '',
+            left: '22.50rem',
+            top: '13.18rem',
+
+          },
+          {
+            seatid: 126,
+            photoHeader: '',
+            left: '23.77rem',
+            top: '13.18rem',
+
+          },
+          {
+            seatid: 127,
+            photoHeader: '',
+            left: '25.08rem',
+            top: '13.18rem',
+
+          },
+          {
+            seatid: 128,
+            photoHeader: '',
+            left: '26.38rem',
+            top: '13.18rem',
+
+          },
+          {
+            seatid: 129,
+            photoHeader: '',
+            left: '27.64rem',
+            top: '13.18rem',
+
+          },
+          {
+            seatid: 130,
+            photoHeader: '',
+            left: '28.95rem',
+            top: '13.18rem',
+
+          },
+          {
+            seatid: 131,
+            photoHeader: '',
+            left: '30.27rem',
+            top: '13.18rem',
+
+          },
+          {
+            seatid: 132,
+            photoHeader: '',
+            left: '31.54rem',
+            top: '13.18rem',
+
+          },
+          {
+            seatid: 133,
+            photoHeader: '',
+            left: '32.83rem',
+            top: '13.18rem',
+
+          },
+
+          {
+            seatid: 134,
+            photoHeader: '',
+            left: '3.72rem',
+            top: '14.51rem',
+
+          },
+          {
+            seatid: 135,
+            photoHeader: '',
+            left: '5.00rem',
+            top: '14.51rem',
+
+          },
+          {
+            seatid: 136,
+            photoHeader: '',
+            left: '6.28rem',
+            top: '14.51rem',
+
+          },
+          {
+            seatid: 137,
+            photoHeader: '',
+            left: '7.58rem',
+            top: '14.51rem',
+
+          },
+          {
+            seatid: 138,
+            photoHeader: '',
+            left: '8.88rem',
+            top: '14.51rem',
+
+          },
+          {
+            seatid: 139,
+            photoHeader: '',
+            left: '10.18rem',
+            top: '14.51rem',
+
+          },
+          {
+            seatid: 140,
+            photoHeader: '',
+            left: '11.46rem',
+            top: '14.51rem',
+
+          },
+          {
+            seatid: 141,
+            photoHeader: '',
+            left: '12.73rem',
+            top: '14.51rem',
+
+          },
+          {
+            seatid: 142,
+            photoHeader: '',
+            left: '14.05rem',
+            top: '14.51rem',
+
+          },
+          {
+            seatid: 143,
+            photoHeader: '',
+            left: '15.35rem',
+            top: '14.51rem',
+
+          },
+          {
+            seatid: 144,
+            photoHeader: '',
+            left: '16.62rem',
+            top: '14.51rem',
+
+          },
+          {
+            seatid: 145,
+            photoHeader: '',
+            left: '17.93rem',
+            top: '14.51rem',
+
+          },
+          {
+            seatid: 146,
+            photoHeader: '',
+            left: '19.20rem',
+            top: '14.51rem',
+
+          },
+          {
+            seatid: 147,
+            photoHeader: '',
+            left: '20.48rem',
+            top: '14.51rem',
+
+          },
+          {
+            seatid: 148,
+            photoHeader: '',
+            left: '21.77rem',
+            top: '14.51rem',
+
+          },
+          {
+            seatid: 149,
+            photoHeader: '',
+            left: '23.04rem',
+            top: '14.51rem',
+
+          },
+          {
+            seatid: 150,
+            photoHeader: '',
+            left: '24.34rem',
+            top: '14.51rem',
+
+          },
+          {
+            seatid: 151,
+            photoHeader: '',
+            left: '25.66rem',
+            top: '14.51rem',
+
+          },
+          {
+            seatid: 152,
+            photoHeader: '',
+            left: '26.93rem',
+            top: '14.51rem',
+
+          },
+          {
+            seatid: 153,
+            photoHeader: '',
+            left: '28.26rem',
+            top: '14.51rem',
+
+          },
+          {
+            seatid: 154,
+            photoHeader: '',
+            left: '29.56rem',
+            top: '14.51rem',
+
+          },
+          {
+            seatid: 155,
+            photoHeader: '',
+            left: '30.82rem',
+            top: '14.51rem',
+
+          },
+          {
+            seatid: 156,
+            photoHeader: '',
+            left: '32.15rem',
+            top: '14.51rem',
+
+          },
+
+          {
+            seatid: 157,
+            photoHeader: '',
+            left: '3.12rem',
+            top: '15.80rem',
+
+          },
+          {
+            seatid: 158,
+            photoHeader: '',
+            left: '4.38rem',
+            top: '15.80rem',
+
+          },
+          {
+            seatid: 159,
+            photoHeader: '',
+            left: '5.69rem',
+            top: '15.80rem',
+
+          },
+          {
+            seatid: 160,
+            photoHeader: '',
+            left: '6.98rem',
+            top: '15.80rem',
+
+          },
+          {
+            seatid: 161,
+            photoHeader: '',
+            left: '8.25rem',
+            top: '15.80rem',
+
+          },
+          {
+            seatid: 162,
+            photoHeader: '',
+            left: '9.53rem',
+            top: '15.80rem',
+
+          },
+          {
+            seatid: 163,
+            photoHeader: '',
+            left: '10.80rem',
+            top: '15.80rem',
+
+          },
+          {
+            seatid: 164,
+            photoHeader: '',
+            left: '12.10rem',
+            top: '15.80rem',
+
+          },
+          {
+            seatid: 165,
+            photoHeader: '',
+            left: '13.45rem',
+            top: '15.80rem',
+
+          },
+          {
+            seatid: 166,
+            photoHeader: '',
+            left: '14.73rem',
+            top: '15.80rem',
+
+          },
+          {
+            seatid: 167,
+            photoHeader: '',
+            left: '16.02rem',
+            top: '15.80rem',
+
+          },
+          {
+            seatid: 168,
+            photoHeader: '',
+            left: '17.32rem',
+            top: '15.80rem',
+
+          },
+          {
+            seatid: 169,
+            photoHeader: '',
+            left: '18.57rem',
+            top: '15.80rem',
+
+          },
+          {
+            seatid: 170,
+            photoHeader: '',
+            left: '19.86rem',
+            top: '15.80rem',
+
+          },
+          {
+            seatid: 171,
+            photoHeader: '',
+            left: '21.18rem',
+            top: '15.80rem',
+
+          },
+          {
+            seatid: 172,
+            photoHeader: '',
+            left: '22.45rem',
+            top: '15.80rem',
+
+          },
+          {
+            seatid: 173,
+            photoHeader: '',
+            left: '23.74rem',
+            top: '15.80rem',
+
+          },
+          {
+            seatid: 174,
+            photoHeader: '',
+            left: '25.02rem',
+            top: '15.80rem',
+
+          },
+          {
+            seatid: 175,
+            photoHeader: '',
+            left: '26.30rem',
+            top: '15.80rem',
+
+          },
+          {
+            seatid: 176,
+            photoHeader: '',
+            left: '27.62rem',
+            top: '15.80rem',
+
+          },
+          {
+            seatid: 177,
+            photoHeader: '',
+            left: '28.94rem',
+            top: '15.80rem',
+
+          },
+          {
+            seatid: 178,
+            photoHeader: '',
+            left: '30.21rem',
+            top: '15.80rem',
+
+          },
+          {
+            seatid: 179,
+            photoHeader: '',
+            left: '31.51rem',
+            top: '15.80rem',
+
+          },
+          {
+            seatid: 180,
+            photoHeader: '',
+            left: '3.75rem',
+            top: '17.12rem',
+
+          },
+          {
+            seatid: 181,
+            photoHeader: '',
+            left: '5.04rem',
+            top: '17.12rem',
+
+          },
+          {
+            seatid: 182,
+            photoHeader: '',
+            left: '6.32rem',
+            top: '17.12rem',
+
+          },
+          {
+            seatid: 183,
+            photoHeader: '',
+            left: '7.59rem',
+            top: '17.12rem',
+
+          },
+          {
+            seatid: 184,
+            photoHeader: '',
+            left: '8.88rem',
+            top: '17.12rem',
+
+          },
+          {
+            seatid: 185,
+            photoHeader: '',
+            left: '10.16rem',
+            top: '17.12rem',
+
+          },
+          {
+            seatid: 186,
+            photoHeader: '',
+            left: '11.46rem',
+            top: '17.12rem',
+
+          },
+          {
+            seatid: 187,
+            photoHeader: '',
+            left: '12.75rem',
+            top: '17.12rem',
+
+          },
+          {
+            seatid: 188,
+            photoHeader: '',
+            left: '14.08rem',
+            top: '17.12rem',
+
+          },
+          {
+            seatid: 189,
+            photoHeader: '',
+            left: '15.36rem',
+            top: '17.12rem',
+
+          },
+          {
+            seatid: 190,
+            photoHeader: '',
+            left: '16.66rem',
+            top: '17.12rem',
+
+          },
+          {
+            seatid: 191,
+            photoHeader: '',
+            left: '17.94rem',
+            top: '17.12rem',
+
+          },
+          {
+            seatid: 192,
+            photoHeader: '',
+            left: '19.23rem',
+            top: '17.12rem',
+
+          },
+          {
+            seatid: 193,
+            photoHeader: '',
+            left: '20.52rem',
+            top: '17.12rem',
+
+          },
+          {
+            seatid: 194,
+            photoHeader: '',
+            left: '21.79rem',
+            top: '17.12rem',
+
+          },
+          {
+            seatid: 195,
+            photoHeader: '',
+            left: '23.08rem',
+            top: '17.12rem',
+
+          },
+          {
+            seatid: 196,
+            photoHeader: '',
+            left: '24.38rem',
+            top: '17.12rem',
+
+          },
+          {
+            seatid: 197,
+            photoHeader: '',
+            left: '25.68rem',
+            top: '17.12rem',
+
+          },
+          {
+            seatid: 198,
+            photoHeader: '',
+            left: '26.96rem',
+            top: '17.12rem',
+
+          },
+          {
+            seatid: 199,
+            photoHeader: '',
+            left: '28.29rem',
+            top: '17.12rem',
+
+          },
+          {
+            seatid: 200,
+            photoHeader: '',
+            left: '29.59rem',
+            top: '17.12rem',
+
+          },
+          {
+            seatid: 201,
+            photoHeader: '',
+            left: '30.87rem',
+            top: '17.12rem',
+
+          },
+
+          {
+            seatid: 202,
+            photoHeader: '',
+            left: '5.69rem',
+            top: '18.55rem',
+
+          },
+          {
+            seatid: 203,
+            photoHeader: '',
+            left: '6.99rem',
+            top: '18.55rem',
+
+          },
+          {
+            seatid: 204,
+            photoHeader: '',
+            left: '8.27rem',
+            top: '18.55rem',
+
+          },
+          {
+            seatid: 205,
+            photoHeader: '',
+            left: '9.59rem',
+            top: '18.55rem',
+
+          },
+          {
+            seatid: 206,
+            photoHeader: '',
+            left: '10.87rem',
+            top: '18.55rem',
+
+          },
+          {
+            seatid: 207,
+            photoHeader: '',
+            left: '12.15rem',
+            top: '18.55rem',
+
+          },
+          {
+            seatid: 208,
+            photoHeader: '',
+            left: '13.45rem',
+            top: '18.55rem',
+
+          },
+          {
+            seatid: 209,
+            photoHeader: '',
+            left: '14.73rem',
+            top: '18.55rem',
+
+          },
+          {
+            seatid: 210,
+            photoHeader: '',
+            left: '16.02rem',
+            top: '18.55rem',
+
+          },
+          {
+            seatid: 211,
+            photoHeader: '',
+            left: '17.30rem',
+            top: '18.55rem',
+
+          },
+          {
+            seatid: 212,
+            photoHeader: '',
+            left: '18.58rem',
+            top: '18.55rem',
+
+          },
+          {
+            seatid: 213,
+            photoHeader: '',
+            left: '19.86rem',
+            top: '18.55rem',
+
+          },
+          {
+            seatid: 214,
+            photoHeader: '',
+            left: '21.16rem',
+            top: '18.55rem',
+
+          },
+          {
+            seatid: 215,
+            photoHeader: '',
+            left: '22.45rem',
+            top: '18.55rem',
+
+          },
+          {
+            seatid: 216,
+            photoHeader: '',
+            left: '23.74rem',
+            top: '18.55rem',
+
+          },
+          {
+            seatid: 217,
+            photoHeader: '',
+            left: '25.02rem',
+            top: '18.55rem',
+
+          },
+          {
+            seatid: 218,
+            photoHeader: '',
+            left: '26.30rem',
+            top: '18.55rem',
+
+          },
+          {
+            seatid: 219,
+            photoHeader: '',
+            left: '27.61rem',
+            top: '18.55rem',
+
+          },
+          {
+            seatid: 220,
+            photoHeader: '',
+            left: '28.93rem',
+            top: '18.55rem',
+
+          }
+
+        ],
+        checkSignImg: '',
+        loctionSeat: {}
+      },
+      created() {
+        this.openid = getOpenid()
+        console.log(this.openid)
+        this.getSelectedList()
+      },
+      mounted: function () {
+        setTimeout(()=>{
+          this.portraitTipShow = false
+        }, 3000)
+      },
+      methods: {
+        getSelectedList() {
+          let self = this
+          ajaxGet(
+            apipath + '/aoc/api/app/aocuser/list', 
+            {},
+            function (res) {
+              console.log(res);
+              if (res.status == 200) {
+                let selectedList = res.results
+                self.seatList.filter(e => {
+                  selectedList.find(i => {
+                    if (e.seatid == i.seatid) {
+                      return e.photoHeader = i.photoHeader
+                    }
+                  })
+                  selectedList.find(i => {
+                    if (e.seatid == i.seatid) {
+                      return e.photoName = i.photoName
+                    }
+                  })
+                  selectedList.find(i => {
+                    if (e.seatid == i.seatid) {
+                      return e.openid = i.openid
+                    }
+                  })
+                })
+                for(let item of self.seatList){
+                  if(self.openid==item.openid){
+                    self.loctionSeat = item
+                  }
+                }
+                console.log(self.loctionSeat)
+              } else {
+                layerMsg(res.msg)
+              }
+            },
+            function (err) {
+              console.log(err)
+            }
+          )
+        },
+        clickSeat(index) {
+          for(let item of this.seatList){
+            item.check = false
+          }
+          console.log(index)
+          this.checkSignImg = this.seatList[index].photoName
+          
+          let obj = this.seatList[index]
+          
+          if(obj.photoHeader){
+            obj.check = true
+          }
+          this.$set(this.seatList, index, obj)
+          
+          let timout = setTimeout(()=>{
+            obj.check = false
+            this.$set(this.seatList, index, obj)
+          }, 2000)
+        },
+        swipeupTip(){
+          this.swipeupTipShow = true
+          let timout = setTimeout(()=>{
+            this.swipeupTipShow = false
+          }, 2000)
+        },
+        touchmove(){
+          let self = this
+          ajaxGet(
+            apipath + '/aoc/api/app/aocdp/savedp', 
+            {
+              openid: self.openid
+            },
+            function (res) {
+              console.log(res);
+              if (res.status == 200) {
+                layerMsg('助力成功')
+              } else {
+                layerMsg(res.msg)
+              }
+            },
+            function (err) {
+              console.log(err)
+            }
+          )
+        }
+        
+      }
+      
+    })
+  </script>
+</body>
+
+</html>

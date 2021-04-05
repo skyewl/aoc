@@ -1,0 +1,248 @@
+.signup-wrap{
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background-image: url(../img/bg01.jpg);
+}
+.logo-box{
+  padding-top: .73rem;
+  padding-left: .73rem;
+}
+.logo-box .logo-img{
+  width: 2.31rem;
+  height: .79rem;
+  display: block;
+}
+.aoc-tit{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 1.17rem;
+}
+.aoc-tit .aoc-img{
+  width: 4.86rem;
+  height: 1.81rem;
+}
+.aoc-tit .tit{
+  font-size: .95rem;
+  font-weight: 500;
+  color: #91F4FF;
+  line-height: 1.14rem;
+  text-shadow: 0px 4px 4px #0E0202;
+  padding-top: .08rem;
+  font-family: FZYOUH_ZHUNJW;
+}
+.aoc-tit .date{
+  width: 6.62rem;
+  height: .48rem;
+  line-height: .48rem;
+  background-image: url(../img/date-bg.png);
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 100%;
+  margin-top: .3rem;
+  text-align: center;
+  font-size: .4rem;
+  font-family: FZYOUH_JW;
+  font-weight: 500;
+  color: #97F8FF;
+}
+.sign-form{
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding-top: .3rem;
+}
+.form-item{
+  display: flex;
+  align-items: center;
+  padding-top: 1.02rem;
+}
+.form-item .lab{
+  font-size: .56rem;
+  font-family: FZYOUH_XIJW;
+  color: #0FE7FF;
+  padding-right: .54rem;
+}
+.form-item .ipt-box{
+  width: 3.6rem;
+  height: .7rem;
+  background-image: url(../img/ipt-border.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin-top: .1rem;
+}
+.form-item .ipt-box .ipt{
+  width: 3.43rem;
+  height: .58rem;
+  padding: .1rem;
+  box-sizing: border-box;
+  color: #0FE7FF;
+  background: transparent !important;
+}
+.form-item  .btn{
+  width: 3.78rem;
+  height: 1.2rem;
+  background-image: url(../img/btn-bg.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  font-size: .6rem;
+  font-family: FZYOUH_JW;
+  color: #4AFEFC;
+  text-align: center;
+  border: 0;
+  background-color: transparent;
+  outline: none;
+  margin-left: 1.4rem;
+  margin-top: .2rem;
+  line-height: .96rem;
+}
+
+.suc-box{
+  width: 7.57rem;
+  height: 5.18rem;
+  background-image: url(../img/suc-box.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin: 1.44rem auto 0;
+  color: #97F8FF;
+}
+.suc-box .dec{
+  padding-top: 1rem;
+  text-align: center;
+  font-size: .64rem;
+  font-family: FZYOUH_JW;
+}
+.suc-box .info{
+  padding-top: .6rem;
+  text-align: center;
+  font-size: .36rem;
+}
+
+
+.nav-list{
+  padding-top: 1rem;
+}
+.nav-list .nav-item{
+  width: 100%;
+  height: 2rem;
+  background-image: url(../img/line.png);
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-size: 100% .2rem;
+}
+.nav-list .nav-item .link{
+  display: flex;
+  padding: .5rem 1.18rem 0 .92rem;
+  align-items: center;
+  color: #B6FDFC;
+  font-size: .57rem;
+}
+.nav-list .nav-item .icon{
+  width: .78rem;
+  height: .78rem;
+}
+.nav-list .nav-item .con{
+  padding-left: .54rem;
+}
+.nav-list .nav-item .arr{
+  margin-left: auto;
+  width: .16rem;
+  height: .16rem;
+}
+
+.notStart-con{
+  width: 8.1rem;
+  height: 6rem;
+  position: relative;
+  background-image: url(../img/tipbg.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.tip-text{
+  font-size: .94rem;
+  font-family: FZYOUH_JW;
+  color: #97F8FF;
+  text-shadow: 6px 11px 12px #000000;
+  text-align: center;
+  padding-top: 2.6rem;
+}
+.close{
+  display: block;
+  position: absolute;
+  width: .6rem;
+  height: .6rem;
+  right: .42rem;
+  top: .05rem;
+}
+.sign-tip{
+  font-size: .47rem;
+  padding-top: 2.4rem;
+}
+
+.backBtn{
+  width: 1.51rem;
+  height: .81rem;
+  background-image: url(../img/back.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin: .4rem auto;
+}
+
+
+.tripLayer{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  z-index: 99;
+  background-color: rgba(0, 0, 0, .8);
+  top: 0;
+  left: 0;
+}
+.tripLayer-con{
+  width: 7.99rem;
+  height: 11.23rem;
+  position: relative;
+  background-image: url(../img/trip_bg.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin: 0 auto;
+  margin-top: 3.94rem;
+}
+.trip-tab{
+  color: #97F8FF;
+}
+.dateTabs{
+  padding-top: .76rem;
+  padding-left: .32rem;
+  font-size: .31rem;
+  display: flex;
+  height: .68rem;
+}
+.dateTabs span{
+  width: 1.44rem;
+  text-align: center;
+  line-height: .8rem;
+}
+.dateTabs span.active{
+  text-shadow: .1rem 0rem .1rem #97F8FF, -.1rem 0rem .1rem #97F8FF,0rem .1rem .1rem #97F8FF,0rem -.1rem .1rem #97F8FF;
+}
+.tabcons{
+  width: 7.23rem;
+  margin: 0 auto;
+  margin-top: .1rem;
+  height: 9.48rem;
+}
+.tabcons .con-text{
+  padding: .3rem;
+  font-size: .3rem;
+  color: #25BDCF;
+  height: 8.6rem;
+  overflow-y: auto;
+}
+.tabcons .con-text .bigTit{
+  font-size: .4rem;
+  color: #7DF6FF;
+}
