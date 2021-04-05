@@ -43,7 +43,7 @@
   <script src="./js/share.js"></script>
 
   <link rel="stylesheet" href="./css/base.css">
-  <link rel="stylesheet" href="./css/seat.css?v=20210405">
+  <link rel="stylesheet" href="./css/seat.css?v=20210406217">
   
   <style>
     body {
@@ -114,6 +114,13 @@
       margin-top: -0.12rem;
       margin-left: -0.12rem;
     }
+    .helpsuc-tip{
+      width: 8rem;
+      height: 4rem;
+      background-image: url(./img/helpsuc-tip.png);
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
 
     .bounce-enter-active {
       animation: bounce-in .5s;
@@ -153,13 +160,17 @@
           </div>
         </li>
       </ul>
-      <div class="location" :style="{top: loctionSeat.top, left: loctionSeat.left}" @click="swipeupTip" @touchmove.once="touchmove"></div>
+      <div v-if="loctionSeat.top" class="location" :style="{top: loctionSeat.top, left: loctionSeat.left}" @click="swipeupTip" @touchmove.once="touchmove"></div>
     </div>
     <div class="portrait-mask" v-show="portraitTipShow" @click="portraitTipShow=false">
       <div class="portrait-tip"></div>
     </div>
     <div class="portrait-mask" v-show="swipeupTipShow" @click="swipeupTipShow=false">
       <div class="swipeup-tip"></div>
+    </div>
+
+    <div class="portrait-mask" v-show="helpsucTipShow">
+      <div class="helpsuc-tip"></div>
     </div>
 
   </section>
@@ -1709,7 +1720,8 @@
 
         ],
         checkSignImg: '',
-        loctionSeat: {}
+        loctionSeat: {},
+        helpsucTipShow: false
       },
       created() {
         this.openid = getOpenid()
@@ -1798,7 +1810,7 @@
             function (res) {
               console.log(res);
               if (res.status == 200) {
-                layerMsg('助力成功')
+                self.helpsucTipShow = true
               } else {
                 layerMsg(res.msg)
               }

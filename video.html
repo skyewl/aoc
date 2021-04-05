@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,7 +17,7 @@
           // if (clientWidth >= 1792) {
           //   docEl.style.fontSize = '100px';
           // } else {
-            
+
           // }
           docEl.style.fontSize = 100 * (clientWidth / 1792) + 'px';
         };
@@ -27,36 +28,40 @@
   </script>
   <script src="./js/jquery.min.js"></script>
   <script src="./js/util.js"></script>
-  <script src="./js/vue.js"></script>
+  <script src="./js/vue.min.js"></script>
 
   <link rel="stylesheet" href="./css/base.css">
   <style>
-    .video-box{
-      position: fixed; 
-      left: 0; 
+    .video-box {
+      position: fixed;
+      left: 0;
       top: 0;
       width: 17.92rem;
       height: auto;
       background-size: cover;
       z-index: 1;
     }
-    .bigAoc{
+
+    .bigAoc {
       height: 8rem;
       position: relative;
       z-index: 2;
     }
-    .bigAoc-list .head-item{
+
+    .bigAoc-list .head-item {
       width: .48rem;
       height: .34rem;
       position: absolute;
       /* background-color: #f00; */
     }
-    .bigAoc-list .head-img{
+
+    .bigAoc-list .head-img {
       width: .48rem;
       height: .34rem;
       vertical-align: top;
     }
-    .aoc-cover{
+
+    .aoc-cover {
       width: 17.92rem;
       height: 8rem;
       position: absolute;
@@ -68,25 +73,7 @@
       top: 0;
     }
 
-    .pulsate-bck {
-      animation: pulsate-bck 1s ease-in-out infinite both;
-    }
-    @keyframes pulsate-bck {
-      0% {
-        -webkit-transform: scale(1);
-                transform: scale(1);
-      }
-      50% {
-        -webkit-transform: scale(0.5);
-                transform: scale(0.5);
-      }
-      100% {
-        -webkit-transform: scale(1);
-                transform: scale(1);
-      }
-    }
-
-    .aoc-big{
+    .aoc-big {
       width: 17.92rem;
       height: 10.24rem;
       position: absolute;
@@ -97,25 +84,31 @@
       opacity: 1;
       left: 0;
       top: 0;
-      /* transform: translate(-50%, -50%); */
       animation: change 3s;
       display: none;
     }
-    @keyframes change{
-      0%  {width: .1rem; height: .1rem; left:50%; top:50%; opacity: 0;}
-      100% {width: 17.92rem; height: 10.24rem; left: 0; top:0; opacity: 1;}
+
+    @keyframes change {
+      0% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
     }
   </style>
 </head>
+
 <body>
   <div id="app" style="width: 100%;height: 100%;overflow: hidden;">
     <video controls autoplay muted class="video-box" id="bgvid">
-      <source src="./video/AOC.mp4" type="video/mp4">
+      <source src="http://kmaoc.oss-cn-beijing.aliyuncs.com/openid/AOC.mp4" type="video/mp4">
     </video>
-    
+
     <div class="bigAoc">
       <ul class="bigAoc-list">
-        <li class="head-item pulsate-bck" v-for="(item, index) in seatList" :style="{top: item.top,left: item.left}">
+        <li class="head-item" v-for="(item, index) in seatList" :style="{top: item.top,left: item.left}">
           <img v-if="item.headImg" :src="item.headImg" class="head-img" alt="">
         </li>
       </ul>
@@ -123,104 +116,984 @@
       <div class="aoc-big slide-in-fwd-center"></div>
     </div>
   </div>
-  
+
   <script>
     var vm = new Vue({
       el: '#app',
       data: {
         seatList: [
           {
+            seatid: 1,
+            left: '1.74rem',
             top: '6.62rem',
-            left: '1.71rem',
             headImg: ''
           },
           {
+            seatid: 2,
+            left: '2.35rem',
             top: '6.63rem',
-            left: '2.32rem',
             headImg: ''
           },
           {
+            seatid: 3,
+            left: '1.92rem',
             top: '6.22rem',
-            left: '1.89rem',
             headImg: ''
           },
           {
+            seatid: 4,
+            left: '2.59rem',
             top: '6.19rem',
-            left: '2.56rem',
             headImg: ''
           },
           {
+            seatid: 5,
+            left: '2.09rem',
             top: '5.83rem',
-            left: '2.06rem',
             headImg: ''
           },
-        ],
+          {
+            seatid: 6,
+            left: '2.78rem',
+            top: '5.72rem',
+            headImg: ''
+          },
+          {
+            seatid: 7,
+            left: '2.27rem',
+            top: '5.43rem',
+            headImg: ''
+          },
+          {
+            seatid: 8,
+            left: '2.96rem',
+            top: '5.27rem',
+            headImg: ''
+          },
+          {
+            seatid: 9,
+            left: '2.45rem',
+            top: '5.04rem',
+            headImg: ''
+          },
+          {
+            seatid: 10,
+            left: '3.16rem',
+            top: '4.83rem',
+            headImg: ''
+          },
+          {
+            seatid: 11,
+            left: '2.65rem',
+            top: '4.64rem',
+            headImg: ''
+          },
+          {
+            seatid: 12,
+            left: '3.38rem',
+            top: '4.39rem',
+            headImg: ''
+          },
+          {
+            seatid: 13,
+            left: '2.83rem',
+            top: '4.25rem',
+            headImg: ''
+          },
+          {
+            seatid: 14,
+            left: '2.45rem',
+            top: '5.04rem',
+            headImg: ''
+          },
+          {
+            seatid: 15,
+            left: '3.56rem',
+            top: '3.99rem',
+            headImg: ''
+          },
+          {
+            seatid: 16,
+            left: '3.01rem',
+            top: '3.85rem',
+            headImg: ''
+          },
+          {
+            seatid: 17,
+            left: '3.76rem',
+            top: '3.56rem',
+            headImg: ''
+          },
+          {
+            seatid: 10,
+            left: '3.16rem',
+            top: '4.83rem',
+            headImg: ''
+          },
+          {
+            seatid: 11,
+            left: '2.65rem',
+            top: '4.64rem',
+            headImg: ''
+          },
+          {
+            seatid: 12,
+            left: '3.38rem',
+            top: '4.39rem',
+            headImg: ''
+          },
+          {
+            seatid: 13,
+            left: '2.83rem',
+            top: '4.25rem',
+            headImg: ''
+          },
+
+          {
+            seatid: 14,
+            left: '3.56rem',
+            top: '3.99rem',
+            headImg: ''
+          },
+          {
+            seatid: 15,
+            left: '3.01rem',
+            top: '3.85rem',
+            headImg: ''
+          },
+          {
+            seatid: 16,
+            left: '3.76rem',
+            top: '3.56rem',
+            headImg: ''
+          },
+          {
+            seatid: 17,
+            left: '3.24rem',
+            top: '3.46rem',
+            headImg: ''
+          },
+
+          {
+            seatid: 18,
+            left: '3.46rem',
+            top: '3.06rem',
+            headImg: ''
+          },
+
+          {
+            seatid: 19,
+            left: '3.99rem',
+            top: '3.18rem',
+            headImg: ''
+          },
+          {
+            seatid: 20,
+            left: '3.82rem',
+            top: '2.65rem',
+            headImg: ''
+          },
+          {
+            seatid: 21,
+            left: '4.36rem',
+            top: '2.86rem',
+            headImg: ''
+          },
+
+          {
+            seatid: 22,
+            left: '4.26rem',
+            top: '2.4rem',
+            headImg: ''
+          },
+
+          {
+            seatid: 23,
+            left: '4.79rem',
+            top: '2.37rem',
+            headImg: ''
+          },
+
+          {
+            seatid: 24,
+            left: '4.83rem',
+            top: '2.86rem',
+            headImg: ''
+          },
+          {
+            seatid: 25,
+            left: '5.30rem',
+            top: '2.37rem',
+            headImg: ''
+          },
+          {
+            seatid: 26,
+            left: '5.81rem',
+            top: '2.37rem',
+            headImg: ''
+          },
+          {
+            seatid: 27,
+            left: '5.32rem',
+            top: '2.85rem',
+            headImg: ''
+          },
+          {
+            seatid: 28,
+            left: '5.78rem',
+            top: '2.81rem',
+            headImg: ''
+          },
+
+
+          {
+            seatid: 29,
+            left: '5.28rem',
+            top: '3.29rem',
+            headImg: ''
+          },
+          {
+            seatid: 30,
+            left: '5.78rem',
+            top: '3.29rem',
+            headImg: ''
+          },
+          {
+            seatid: 31,
+            left: '5.30rem',
+            top: '3.78rem',
+            headImg: ''
+          },
+          {
+            seatid: 32,
+            left: '5.80rem',
+            top: '3.78rem',
+            headImg: ''
+          },
+          {
+            seatid: 33,
+            left: '5.28rem',
+            top: '4.27rem',
+            headImg: ''
+          },
+          {
+            seatid: 34,
+            left: '5.78rem',
+            top: '4.27rem',
+            headImg: ''
+          },
+
+
+
+
+
+
+          {
+            seatid: 35,
+            left: '5.29rem',
+            top: '4.76rem',
+            headImg: ''
+          },
+          {
+            seatid: 36,
+            left: '5.79rem',
+            top: '4.76rem',
+            headImg: ''
+          },
+          {
+            seatid: 37,
+            left: '5.29rem',
+            top: '5.23rem',
+            headImg: ''
+          },
+          {
+            seatid: 38,
+            left: '5.79rem',
+            top: '5.23rem',
+            headImg: ''
+          },
+          {
+            seatid: 39,
+            left: '5.28rem',
+            top: '5.71rem',
+            headImg: ''
+          },
+          {
+            seatid: 40,
+            left: '5.78rem',
+            top: '5.71rem',
+            headImg: ''
+          },
+          {
+            seatid: 41,
+            left: '5.29rem',
+            top: '6.19rem',
+            headImg: ''
+          },
+          {
+            seatid: 42,
+            left: '5.79rem',
+            top: '6.19rem',
+            headImg: ''
+          },
+          {
+            seatid: 43,
+            left: '5.29rem',
+            top: '6.67rem',
+            headImg: ''
+          },
+          {
+            seatid: 44,
+            left: '5.79rem',
+            top: '6.67rem',
+            headImg: ''
+          },
+
+
+
+          {
+            seatid: 45,
+            left: '7.06rem',
+            top: '6.06rem',
+            headImg: ''
+          },
+          {
+            seatid: 46,
+            left: '7.66rem',
+            top: '5.96rem',
+            headImg: ''
+          },
+          {
+            seatid: 47,
+            left: '6.99rem',
+            top: '5.57rem',
+            headImg: ''
+          },
+          {
+            seatid: 48,
+            left: '7.47rem',
+            top: '5.56rem',
+            headImg: ''
+          },
+          {
+            seatid: 49,
+            left: '6.99rem',
+            top: '5.04rem',
+            headImg: ''
+          },
+          {
+            seatid: 50,
+            left: '7.47rem',
+            top: '5.09rem',
+            headImg: ''
+          },
+          {
+            seatid: 51,
+            left: '7.48rem',
+            top: '4.66rem',
+            headImg: ''
+          },
+          {
+            seatid: 52,
+            left: '6.97rem',
+            top: '4.50rem',
+            headImg: ''
+          },
+          {
+            seatid: 53,
+            left: '7.48rem',
+            top: '4.23rem',
+            headImg: ''
+          },
+          {
+            seatid: 54,
+            left: '6.99rem',
+            top: '3.97rem',
+            headImg: ''
+          },
+          {
+            seatid: 55,
+            left: '7.47rem',
+            top: '3.80rem',
+            headImg: ''
+          },
+          {
+            seatid: 56,
+            left: '6.97rem',
+            top: '3.48rem',
+            headImg: ''
+          },
+          {
+            seatid: 57,
+            left: '7.47rem',
+            top: '3.35rem',
+            headImg: ''
+          },
+          {
+            seatid: 58,
+            left: '7.08rem',
+            top: '2.97rem',
+            headImg: ''
+          },
+          {
+            seatid: 59,
+            left: '7.71rem',
+            top: '3.01rem',
+            headImg: ''
+          },
+          {
+            seatid: 60,
+            left: '7.38rem',
+            top: '2.63rem',
+            headImg: ''
+          },
+
+          {
+            seatid: 61,
+            left: '7.82rem',
+            top: '2.46rem',
+            headImg: ''
+          },
+          {
+            seatid: 62,
+            left: '8.13rem',
+            top: '2.88rem',
+            headImg: ''
+          },
+          {
+            seatid: 63,
+            left: '8.30rem',
+            top: '2.41rem',
+            headImg: ''
+          },
+          {
+            seatid: 64,
+            left: '8.60rem',
+            top: '2.85rem',
+            headImg: ''
+          },
+          {
+            seatid: 65,
+            left: '8.79rem',
+            top: '2.39rem',
+            headImg: ''
+          },
+          {
+            seatid: 66,
+            left: '9.07rem',
+            top: '2.85rem',
+            headImg: ''
+          },
+          {
+            seatid: 67,
+            left: '9.28rem',
+            top: '2.39rem',
+            headImg: ''
+          },
+          {
+            seatid: 68,
+            left: '9.56rem',
+            top: '2.89rem',
+            headImg: ''
+          },
+          {
+            seatid: 69,
+            left: '9.77rem',
+            top: '2.47rem',
+            headImg: ''
+          },
+          {
+            seatid: 70,
+            left: '10.21rem',
+            top: '2.64rem',
+            headImg: ''
+          },
+          {
+            seatid: 71,
+            left: '9.99rem',
+            top: '3.17rem',
+            headImg: ''
+          },
+          {
+            seatid: 72,
+            left: '10.50rem',
+            top: '2.99rem',
+            headImg: ''
+          },
+          {
+            seatid: 73,
+            left: '10.07rem',
+            top: '3.61rem',
+            headImg: ''
+          },
+          {
+            seatid: 74,
+            left: '10.58rem',
+            top: '3.42rem',
+            headImg: ''
+          },
+          {
+            seatid: 75,
+            left: '10.08rem',
+            top: '4.09rem',
+            headImg: ''
+          },
+          {
+            seatid: 76,
+            left: '10.58rem',
+            top: '3.92rem',
+            headImg: ''
+          },
+          {
+            seatid: 77,
+            left: '10.09rem',
+            top: '4.55rem',
+            headImg: ''
+          },
+          {
+            seatid: 78,
+            left: '10.59rem',
+            top: '4.40rem',
+            headImg: ''
+          },
+          {
+            seatid: 79,
+            left: '10.08rem',
+            top: '5.01rem',
+            headImg: ''
+          },
+          {
+            seatid: 80,
+            left: '10.59rem',
+            top: '4.89rem',
+            headImg: ''
+          },
+          {
+            seatid: 81,
+            left: '10.08rem',
+            top: '5.44rem',
+            headImg: ''
+          },
+          {
+            seatid: 82,
+            left: '10.60rem',
+            top: '5.37rem',
+            headImg: ''
+          },
+          {
+            seatid: 83,
+            left: '10.01rem',
+            top: '5.86rem',
+            headImg: ''
+          },
+          {
+            seatid: 84,
+            left: '10.60rem',
+            top: '5.86rem',
+            headImg: ''
+          },
+          {
+            seatid: 85,
+            left: '10.33rem',
+            top: '6.20rem',
+            headImg: ''
+          },
+
+          {
+            seatid: 86,
+            left: '9.60rem',
+            top: '6.05rem',
+            headImg: ''
+          },
+          {
+            seatid: 87,
+            left: '9.89rem',
+            top: '6.46rem',
+            headImg: ''
+          },
+          {
+            seatid: 88,
+            left: '9.14rem',
+            top: '6.15rem',
+            headImg: ''
+          },
+          {
+            seatid: 89,
+            left: '9.40rem',
+            top: '6.59rem',
+            headImg: ''
+          },
+          {
+            seatid: 90,
+            left: '8.62rem',
+            top: '6.15rem',
+            headImg: ''
+          },
+          {
+            seatid: 91,
+            left: '8.91rem',
+            top: '6.62rem',
+            headImg: ''
+          },
+          {
+            seatid: 92,
+            left: '8.12rem',
+            top: '6.13rem',
+            headImg: ''
+          },
+          {
+            seatid: 93,
+            left: '8.43rem',
+            top: '6.61rem',
+            headImg: ''
+          },
+          {
+            seatid: 94,
+            left: '7.93rem',
+            top: '6.54rem',
+            headImg: ''
+          },
+          {
+            seatid: 95,
+            left: '7.46rem',
+            top: '6.37rem',
+            headImg: ''
+          },
+
+          {
+            seatid: 96,
+            left: '14.80rem',
+            top: '3.47rem',
+            headImg: ''
+          },
+          {
+            seatid: 97,
+            left: '15.35rem',
+            top: '3.47rem',
+            headImg: ''
+          },
+          {
+            seatid: 98,
+            left: '14.63rem',
+            top: '3.06rem',
+            headImg: ''
+          },
+          {
+            seatid: 99,
+            left: '15.24rem',
+            top: '2.95rem',
+            headImg: ''
+          },
+          {
+            seatid: 100,
+            left: '14.91rem',
+            top: '2.58rem',
+            headImg: ''
+          },
+          {
+            seatid: 101,
+            left: '14.47rem',
+            top: '2.39rem',
+            headImg: ''
+          },
+          {
+            seatid: 102,
+            left: '14.16rem',
+            top: '2.88rem',
+            headImg: ''
+          },
+          {
+            seatid: 103,
+            left: '13.97rem',
+            top: '2.37rem',
+            headImg: ''
+          },
+
+          {
+            seatid: 104,
+            left: '13.49rem',
+            top: '2.37rem',
+            headImg: ''
+          },
+          {
+            seatid: 105,
+            left: '13.64rem',
+            top: '2.86rem',
+            headImg: ''
+          },
+          {
+            seatid: 106,
+            left: '13.00rem',
+            top: '2.38rem',
+            headImg: ''
+          },
+          {
+            seatid: 107,
+            left: '13.12rem',
+            top: '2.89rem',
+            headImg: ''
+          },
+          {
+            seatid: 108,
+            left: '12.52rem',
+            top: '2.47rem',
+            headImg: ''
+          },
+          {
+            seatid: 109,
+            left: '12.08rem',
+            top: '2.73rem',
+            headImg: ''
+          },
+          {
+            seatid: 110,
+            left: '11.83rem',
+            top: '3.11rem',
+            headImg: ''
+          },
+          {
+            seatid: 111,
+            left: '12.61rem',
+            top: '3.05rem',
+            headImg: ''
+          },
+
+          {
+            seatid: 112,
+            left: '11.80rem',
+            top: '3.61rem',
+            headImg: ''
+          },
+          {
+            seatid: 113,
+            left: '12.34rem',
+            top: '3.46rem',
+            headImg: ''
+          },
+          {
+            seatid: 114,
+            left: '11.79rem',
+            top: '4.10rem',
+            headImg: ''
+          },
+          {
+            seatid: 115,
+            left: '12.33rem',
+            top: '3.91rem',
+            headImg: ''
+          },
+          {
+            seatid: 116,
+            left: '12.33rem',
+            top: '4.34rem',
+            headImg: ''
+          },
+          {
+            seatid: 117,
+            left: '11.79rem',
+            top: '4.59rem',
+            headImg: ''
+          },
+          {
+            seatid: 118,
+            left: '12.34rem',
+            top: '4.78rem',
+            headImg: ''
+          },
+          {
+            seatid: 119,
+            left: '11.79rem',
+            top: '5.08rem',
+            headImg: ''
+          },
+          {
+            seatid: 120,
+            left: '12.34rem',
+            top: '5.12rem',
+            headImg: ''
+          },
+          {
+            seatid: 121,
+            left: '11.79rem',
+            top: '5.56rem',
+            headImg: ''
+          },
+          {
+            seatid: 122,
+            left: '12.36rem',
+            top: '5.65rem',
+            headImg: ''
+          },
+          {
+            seatid: 123,
+            left: '11.87rem',
+            top: '6.05rem',
+            headImg: ''
+          },
+
+          {
+            seatid: 124,
+            left: '12.24rem',
+            top: '6.37rem',
+            headImg: ''
+          },
+          {
+            seatid: 125,
+            left: '12.65rem',
+            top: '6.03rem',
+            headImg: ''
+          },
+          {
+            seatid: 126,
+            left: '12.70rem',
+            top: '6.55rem',
+            headImg: ''
+          },
+          {
+            seatid: 127,
+            left: '13.20rem',
+            top: '6.14rem',
+            headImg: ''
+          },
+          {
+            seatid: 128,
+            left: '11.87rem',
+            top: '6.05rem',
+            headImg: ''
+          },
+          {
+            seatid: 129,
+            left: '13.20rem',
+            top: '6.63rem',
+            headImg: ''
+          },
+          {
+            seatid: 130,
+            left: '13.74rem',
+            top: '6.15rem',
+            headImg: ''
+          },
+          {
+            seatid: 131,
+            left: '13.70rem',
+            top: '6.63rem',
+            headImg: ''
+          },
+          {
+            seatid: 132,
+            left: '14.18rem',
+            top: '6.59rem',
+            headImg: ''
+          },
+          {
+            seatid: 133,
+            left: '14.26rem',
+            top: '6.05rem',
+            headImg: ''
+          },
+          {
+            seatid: 134,
+            left: '14.64rem',
+            top: '6.47rem',
+            headImg: ''
+          },
+          {
+            seatid: 135,
+            left: '15.00rem',
+            top: '6.20rem',
+            headImg: ''
+          },
+          {
+            seatid: 136,
+            left: '14.65rem',
+            top: '5.77rem',
+            headImg: ''
+          },
+          {
+            seatid: 137,
+            left: '15.26rem',
+            top: '5.83rem',
+            headImg: ''
+          },
+          {
+            seatid: 138,
+            left: '14.78rem',
+            top: '5.36rem',
+            headImg: ''
+          },
+          {
+            seatid: 139,
+            left: '15.35rem',
+            top: '5.35rem',
+            headImg: ''
+          },
+
+        ]
       },
       mounted() {
         // this.getHeadImg()
       },
       methods: {
-        getHeadImg(){
+        getHeadImg() {
           let self = this
           let time = 1
           let intv = window.setInterval(function () {
-            
-            if(time==16){
+
+            if (time == 16) {
               clearInterval(intv)
             }
-            time = time+1
+            time = time + 1
             ajaxGet(
-              apipath + '/aoc/api/app/aocdp/lunxun', 
-              {},
+              apipath + '/aoc/api/app/aocdp/lunxun', {},
               function (res) {
                 console.log(res);
-                if(res.status == 200){
+                if (res.status == 200) {
                   let resArr = res.results
                   // let resArr = [
-                  
+
                   // ]
                   let newSeatList = []
                   newSeatList = self.seatList.filter(item => {
                     return !item.headImg
                   })
                   console.log(newSeatList)
-                  self.seatList.splice(self.seatList.length-newSeatList.length, newSeatList.length)
+                  self.seatList.splice(self.seatList.length - newSeatList.length, newSeatList.length)
 
-                  if(resArr.length){
-                    newSeatList.forEach( (item, index) => {
+                  if (resArr.length) {
+                    newSeatList.forEach((item, index) => {
                       item.headImg = resArr[index]
                     })
                   }
                   self.seatList = self.seatList.concat(newSeatList)
                   console.log(self.seatList)
-                  
+
                 }
               },
               function (res) {
                 console.log(res);
               }
             )
-            
+
           }, 1000)
         }
       }
     })
     // 视频渲染监听视频播放结束
     var video = document.getElementById('bgvid')
-    
+
     //监听视频加载  
-    video.addEventListener('loadedmetadata',  () => {     
+    video.addEventListener('loadedmetadata', () => {
       //视频的总长度  
       console.log(video.duration);
 
     })
     // video.play()
-    video.addEventListener('play', () => {     
+    video.addEventListener('play', () => {
       console.log("开始播放");
       vm.getHeadImg()
     });
 
-    video.addEventListener('timeupdate',function () {
+    video.addEventListener('timeupdate', function () {
       // var i = window.setInterval(function () {
       //   if(video1.ended){
       //     clearInterval(i);
@@ -232,12 +1105,13 @@
       timeDisplay = Math.floor(video.currentTime)
       // console.log(Math.floor(video.currentTime))
       //当视频播放到 16s的时候做处理
-      if(timeDisplay == 16){
+      if (timeDisplay == 16) {
         //处理代码
         $('.aoc-big').show()
       }
-    },false)
+    }, false)
   </script>
-  
+
 </body>
+
 </html>

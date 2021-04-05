@@ -46,7 +46,7 @@
   <div class="seat-wrap" id="app" v-cloak>
     <ul class="head-list">
       <li class="head-item" v-for="(item, index) in seatList" :style="{top: item.top,left: item.left}">
-        <div class="head-box">
+        <div class="head-box" :style="item.notSeat ? 'background:none' : '' ">
           <img v-if="item.photoHeader" :src="item.photoHeader" class="head-img" alt="">
         </div>
       </li>

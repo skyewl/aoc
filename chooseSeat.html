@@ -49,18 +49,26 @@
     <div class="seat-wrap">
       <ul class="head-list">
         <li class="head-item" v-for="(item, index) in seatList" :style="{top: item.top,left: item.left}">
-          <div class="head-box">
+          <div class="head-box" :style="item.notSeat ? 'background:none' : '' ">
             <img v-if="item.photoHeader" :src="item.photoHeader" class="head-img" alt="">
           </div>
         </li>
       </ul>
       <div class="yun-top"></div>
       <ul class="seat-list">
-        <li class="seat-item" v-for="(item, index) in seatList" :style="{top: item.top,left: item.left}" @click="clickSeat(index)">
-          <div class="signText-box" v-if="item.check">
-            <img class="signText-img" :src="checkSignImg" alt="">
-          </div>
-        </li>
+        <template v-for="(item, index) in seatList">
+          <li v-if="item.notSeat" class="seat-item" :style="{top: item.top,left: item.left}" @touchstart="touchstartSeat(index)" @touchend="clearSetTimeout">
+            <div class="signText-box" v-if="item.check">
+              <img class="signText-img" :src="checkSignImg" alt="">
+            </div>
+          </li>
+          <li v-else class="seat-item" :style="{top: item.top,left: item.left}" @click="clickSeat(index)">
+            <div class="signText-box" v-if="item.check">
+              <img class="signText-img" :src="checkSignImg" alt="">
+            </div>
+          </li>
+        </template>
+        
       </ul>
     </div>
 
@@ -1632,7 +1640,8 @@
 
         ],
         checkSignImg: '',
-        openid: getparam('openid')
+        openid: getparam('openid'),
+        timeOut: null
       },
       created() {
         for(let item of this.seatList){
@@ -1690,7 +1699,7 @@
               obj.check = false
               this.$set(this.seatList, index, obj)
             }, 2000)
-          } else if(!obj.notSeat) {
+          } else {
             this.confirmSeatid = this.seatList[index].seatid
             this.confirmTipShow = true
           }
@@ -1723,8 +1732,17 @@
               console.log(res);
             }
           )
+        },
+        // 长按选座
+        touchstartSeat(index){
           
-
+          clearTimeout(this.timeOut); //再次清空定时器，防止重复注册定时器
+          this.timeOut = setTimeout(function() {
+            this.clickSeat(index)
+          }.bind(this), 4000,)
+        },
+        clearSetTimeout(){
+          clearTimeout(this.timeOut);
         }
       },
       
