@@ -102,6 +102,7 @@
       background-image: url(./img/swipeup-tip.png);
       background-repeat: no-repeat;
       background-size: cover;
+      position: absolute;
     }
     .location{
       width: 1.6rem;
@@ -115,8 +116,8 @@
       margin-left: -0.12rem;
     }
     .helpsuc-tip{
-      width: 8rem;
-      height: 4rem;
+      width: 8.35rem;
+      height: 4.31rem;
       background-image: url(./img/helpsuc-tip.png);
       background-repeat: no-repeat;
       background-size: cover;
@@ -159,14 +160,19 @@
             <img class="signText-img" :src="checkSignImg" alt="">
           </div>
         </li>
+        
       </ul>
+      
       <div v-if="loctionSeat.top" class="location" :style="{top: loctionSeat.top, left: loctionSeat.left}" @click="swipeupTip" @touchmove.once="touchmove"></div>
+      
     </div>
+
     <div class="portrait-mask" v-show="portraitTipShow" @click="portraitTipShow=false">
       <div class="portrait-tip"></div>
     </div>
+
     <div class="portrait-mask" v-show="swipeupTipShow" @click="swipeupTipShow=false">
-      <div class="swipeup-tip"></div>
+      <div class="swipeup-tip" :style="{top: (parseFloat(loctionSeat.top)+.8) + 'rem' , left: (parseFloat(loctionSeat.left) - 2.4) + 'rem'}"></div>
     </div>
 
     <div class="portrait-mask" v-show="helpsucTipShow">

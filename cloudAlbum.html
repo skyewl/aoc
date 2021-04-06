@@ -41,6 +41,9 @@
   
   <link rel="stylesheet" href="./css/base.css">
   <style>
+    .page-wrap{
+      max-width: 1080px;
+    }
     .album-bg{
       background-size: 100% 100%;
       background-repeat: no-repeat;
@@ -59,7 +62,7 @@
       width: 3.36rem;
       height: 2.92rem;
       position: absolute;
-      background-color: antiquewhite;
+      /* background-color: antiquewhite; */
     }
     .block-list .block1{
       top: 4.12rem;
@@ -88,10 +91,10 @@
   </style>
 </head>
 <body>
-  <div id="app">
+  <div id="app" class="page-wrap">
     <div class="album-bg"></div>
     <ul class="block-list">
-      <li class="block" v-for="item in menuList" :class="['block' + item.menuId ]" @click="clickMenu(item.menuId)"></li>
+      <li class="block" v-for="item in menuList" :class="['block' + item.menuId ]" @click="clickMenu(item.name)"></li>
       <!-- <li class="block block2"></li>
       <li class="block block3"></li>
       <li class="block block4"></li>
@@ -107,34 +110,40 @@
         openid: '',
         menuList: [
           {
-            menuId: 1
+            menuId: 1,
+            name: 'cangshan'
           },
           {
-            menuId: 2
+            menuId: 2,
+            name: 'lanran'
           },
           {
-            menuId: 3
+            menuId: 3,
+            name: 'xizhouzhen'
           },
           {
-            menuId: 4
+            menuId: 4,
+            name: 'erhai'
           },
           {
-            menuId: 5
+            menuId: 5,
+            name: 'qita'
           },
           {
-            menuId: 6
+            menuId: 6,
+            name: 'sheyingdasai'
           },
         ]
       },
       created: function () {
-        
+        this.openid = getOpenid()
       },
       mounted: function () {
         
       },
       methods: {
-        clickMenu(id){
-          
+        clickMenu(name){
+          window.location.href='./album.html?albumName=' + name
         }
       }
     })

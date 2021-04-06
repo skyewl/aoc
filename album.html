@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
@@ -31,95 +33,238 @@
       doc.addEventListener('DOMContentLoaded', recalc, false);
     })(document, window);
   </script>
-  
+
   <script src="./js/jquery.min.js"></script>
   <script src="./js/layer_mobile/layer.js"></script>
   <script src="./js/util.js"></script>
   <script src="./js/vue.js"></script>
   <script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js "></script>
   <script src="./js/share.js"></script>
-  
+  <script src="https://gosspublic.alicdn.com/aliyun-oss-sdk-6.8.0.min.js"></script>
+
   <link rel="stylesheet" href="./css/base.css">
   <style>
-    .album-bg{
-      background-size: 100% 100%;
-      background-repeat: no-repeat;
+    .page-wrap {
+      max-width: 1080px;
+      padding-top: 1.26rem;
+    }
+
+    .album-bg {
       width: 100%;
       height: 100%;
-      position: absolute;
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
       background-image: url(./img/album-bg.jpg);
-      top: 0;
+      position: absolute;
       left: 0;
+      top: 0;
       z-index: -1;
     }
-    .photo-list{
-      width: 9rem;
-      height: 16.14rem;
+
+    .photo-list {
+      width: 9.24rem;
+      height: 15.96rem;
       overflow-x: hidden;
       overflow-y: auto;
       display: flex;
       flex-wrap: wrap;
-      background-color: aqua;
-      padding-top: 1.12rem;
+      position: relative;
       margin: 0 auto;
+      align-content: flex-start;
     }
-    .photo-list .block{
+
+    .photo-list .block {
       width: 4.24rem;
       height: 4.24rem;
-      background-color: antiquewhite;
+      /* background-color: #fff; */
       border-radius: .3rem;
-      margin-right: .2rem;
+      margin: 0 0 .26rem .3rem;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-    
+
+    .photo-list .block .photo-img {
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+    }
+
+    .notphoto{
+      text-align: center;
+      color: #999;
+      width: 100%;
+      padding-top: 2rem;
+    }
+
+    .upload-btn {
+      width: 3.78rem;
+      height: 1.2rem;
+      margin: 0 auto;
+      margin-top: .64rem;
+      background-image: url(./img/uploadPhoto-btn.png);
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    .upload-ipt{
+      width: 3.78rem;
+      height: 1.2rem;
+      opacity: 0;
+    }
   </style>
 </head>
+
 <body>
-  <div id="app">
+  <div id="app" class="page-wrap">
     <div class="album-bg"></div>
     <ul class="photo-list">
-      <li class="block" v-for="item in photoList" @click="checkPhoto()"></li>
+      <template v-if="photoList.length">
+        <li v-for="item in photoList" class="block" @click="checkPhoto(item.sid)">
+          <img class="photo-img" :src="item.photoUrl" alt="">
+        </li>
+      </template>
+      <li class="notphoto" v-else>
+        暂无照片
+      </li>
+      
     </ul>
+    <div class="upload-btn">
+      <input class="upload-ipt" name="photofile" type="file" accept="image/*" @change="uploadPhoto">
+    </div>
+    <!-- <img id="myimg" src="" alt=""> -->
   </div>
-  
+
   <script>
     var vm = new Vue({
       el: '#app',
       data: {
         openid: '',
+        albumName: '', // 相册名
         photoList: [
-          {
-            menuId: 1
-          },
-          {
-            menuId: 2
-          },
-          {
-            menuId: 3
-          },
-          {
-            menuId: 4
-          },
-          {
-            menuId: 5
-          },
-          {
-            menuId: 6
-          },
-        ]
+          // {
+          //   area: "cangshan",
+          //   dianzannum: 0,
+          //   openid: "ogMOfjitIH1wkBQjn5-8-jzrA6xA",
+          //   photoUrl: "http://kmaoc.oss-cn-beijing.aliyuncs.com/openid/logo.png",
+          //   sid: "7122379696C711EBA15800163E32A83E",
+          // },
+        ],
+        uploading: false,
+        uploadImgUrl: ''
       },
       created: function () {
-        
+        this.openid = getOpenid()
+        this.albumName = getparam('albumName')
       },
       mounted: function () {
-        
+        this.getPhotoList()
       },
       methods: {
-        checkPhoto(){
+        getPhotoList(){
+          let self = this
+          let postData = {
+            area: self.albumName
+          }
+          ajaxPost(
+            apipath + '/aoc/api/app/aocphoto/list', 
+            JSON.stringify(postData),
+            function (res) {
+              console.log(res);
+              if(res.status==200){
+                // self.photoList = res.results
+                self.photoList = res.results.filter(item => {
+                  return item.area == self.albumName
+                })
+              } else {
+                layerMsg(res.msg);
+              }
+            },
+            function (res) {
+              console.log(res);
+            },
+            function (res) {
+              console.log(res);
+            }
+          )
+        },
+        checkPhoto(sid) {
+          window.location.href='./viewPhoto.html?albumName=' + this.albumName + '&sid=' + sid
+        },
+        uploadPhoto() {
+          let self = this
+          if(self.uploading){
+            return false
+          }
+          self.uploading = true
+          $.ajax({
+            type: 'get',
+            url: apipath + '/aoc/api/osstoken/sts',
+            dataType: 'json',
+            async: false,
+            success: function (data) {
+              let client = new OSS({
+                accessKeyId: data.results.AccessKeyId,
+                accessKeySecret: data.results.AccessKeySecret,
+                stsToken: data.results.SecurityToken,
+                // region表示您申请OSS服务所在的地域，例如oss-cn-hangzhou。
+                region: 'oss-cn-beijing',
+                bucket: 'kmaoc'
+              });
 
+              let aafile = $('input[name="photofile"]').prop('files')[0];
+              console.log(aafile.name);
+              let storeAs = 'openid/' + aafile.name;
+              // storeAs可以自定义为文件名（例如file.txt）或目录（例如abc/test/file.txt）的形式，实现将文件上传至当前Bucket或Bucket下的指定目录。
+              // file可以自定义为File对象、Blob数据以及OSS Buffer。
+              client.put(storeAs, aafile).then(function (result) {
+                console.log(result);
+                console.log(result.res.requestUrls[0]);
+
+                // 获取服务器返回图片地址
+                self.uploadImgUrl = result.res.requestUrls[0]
+                // 上传到相册
+                self.uploadImgToAlbum()
+
+                // $("#myimg").attr("src", result.res.requestUrls[0]);
+              }).catch(function (err) {
+                console.log(err);
+              })
+
+            }
+          })
+        },
+        uploadImgToAlbum(){
+          let self = this
+          let postData = {
+            area: self.albumName,
+            openid: self.openid,
+            photoUrl: self.uploadImgUrl
+          }
+          ajaxPost(
+            apipath + '/aoc/api/app/aocphoto/save', 
+            JSON.stringify(postData),
+            function (res) {
+              console.log(res);
+              if(res.status==200){
+                layerMsg('上传成功');
+                self.getPhotoList()
+              } else {
+                layerMsg(res.msg);
+              }
+            },
+            function (res) {
+              console.log(res);
+            },
+            function (res) {
+              console.log(res);
+              self.uploading = false
+            }
+          )
         }
       }
     })
-    
   </script>
 </body>
+
 </html>

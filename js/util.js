@@ -38,7 +38,7 @@ function getparam(name, url) {
 }
 
 // ajaxpost异步请求
-function ajaxPost(url, data, success, error) {
+function ajaxPost(url, data, success, error, comp) {
   $.ajax({
     url: url,
     type: 'POST',
@@ -58,14 +58,17 @@ function ajaxPost(url, data, success, error) {
         error(data);
       }
     },
-    // complete: function () {
-    //   $('.loading').hide();
-    // }
+    complete: function () {
+      // $('.loading').hide();
+      if (comp) {
+        comp(data);
+      }
+    }
   });
 }
 
 // ajaxpost同步请求
-function ajaxPost_syn(url, data, success, error) {
+function ajaxPost_syn(url, data, success, error, comp) {
   $.ajax({
     url: url,
     type: 'POST',
@@ -73,9 +76,9 @@ function ajaxPost_syn(url, data, success, error) {
     async: false,
     // contentType: 'application/json;charset=UTF-8',
     data: data ? data : {},
-    beforeSend: function () {
-      $(".loading").show();
-    },
+    // beforeSend: function () {
+    //   $(".loading").show();
+    // },
     success: function (data) {
       if (success) {
         success(data);
@@ -87,7 +90,10 @@ function ajaxPost_syn(url, data, success, error) {
       }
     },
     complete: function () {
-      $('.loading').hide();
+      // $('.loading').hide();
+      if (comp) {
+        comp(data);
+      }
     }
   });
 }

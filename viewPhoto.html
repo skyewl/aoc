@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="format-detection" content="telephone=no" />
+  <meta name="format-detection" content="email=no">
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Expires" content="0" />
+  <title>全屏云视代 融竞犇新篇</title>
+  <script>
+    //rem
+    (function (doc, win) {
+      var docEl = doc.documentElement,
+        resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+        recalc = function () {
+          var clientWidth = docEl.clientWidth;
+          if (!clientWidth) return;
+          if (clientWidth >= 1080) {
+            docEl.style.fontSize = '100px';
+          } else {
+            docEl.style.fontSize = 100 * (clientWidth / 1080) + 'px';
+          }
+        };
+      if (!doc.addEventListener) return;
+      win.addEventListener(resizeEvt, recalc, false);
+      doc.addEventListener('DOMContentLoaded', recalc, false);
+    })(document, window);
+  </script>
+
+  <script src="./js/jquery.min.js"></script>
+  <script src="./js/layer_mobile/layer.js"></script>
+  <script src="./js/util.js"></script>
+  <script src="./js/vue.js"></script>
+  <script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js "></script>
+  <script src="./js/share.js"></script>
+  <script src="https://gosspublic.alicdn.com/aliyun-oss-sdk-6.8.0.min.js"></script>
+
+  <link rel="stylesheet" href="./css/base.css">
+  <style>
+    .page-wrap {
+      width: 100%;
+      overflow: hidden;
+      max-width: 1080px;
+      padding-top: 4.52rem;
+    }
+
+    .photo-bg {
+      width: 100%;
+      height: 100%;
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      background-image: url(./img/bg01.jpg);
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: -1;
+    }
+    .photo-box{
+      width: 100%;
+      height: 8.06rem;
+      /* background-color: #fff; */
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .photo-box .photo-img{
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+    }
+    .info{
+      padding: .54rem 1.18rem 0 .78rem;
+      display: flex;
+      justify-content: space-between;
+      font-size: .44rem;
+      color: #B6FDFC;
+    }
+    .praise{
+      display: flex;
+      align-items: center;
+    }
+    .pra-ico{
+      display: block;
+      width: .4rem;
+      height: .4rem;
+      background-image: url(./img/pra-ico.png);
+      background-size: cover;
+      background-repeat: no-repeat;
+      margin-right: .34rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app" class="page-wrap">
+    <div class="photo-bg"></div>
+    <div class="photo-box">
+      <img class="photo-img" :src="photoInfo.photoUrl" alt="">
+    </div>
+    <div class="info">
+      <span class="author">作者：{{photoInfo.nickname}}</span>
+      <div class="praise" v-if="albumName=='sheyingdasai'">
+        <i class="pra-ico" @click="handlePraise"></i>赞 {{photoInfo.dianzannum}}
+      </div>
+    </div>
+    <div class="save-btn"></div>
+  </div>
+
+  <script>
+    var vm = new Vue({
+      el: '#app',
+      data: {
+        openid: '',
+        albumName: '',
+        sid: '',
+        photoInfo:{
+          // area: "cangshan",
+          // dianzannum: 0,
+          // openid: "ogMOfjitIH1wkBQjn5-8-jzrA6xA",
+          // photoUrl: "http://kmaoc.oss-cn-beijing.aliyuncs.com/openid/logo.png",
+          // sid: "7122379696C711EBA15800163E32A83E",
+        }
+      },
+      created: function () {
+        this.openid = getOpenid()
+        this.albumName = getparam('albumName')
+        this.sid = getparam('sid')
+      },
+      mounted: function () {
+        this.getPhotoInfo()
+      },
+      methods: {
+        getPhotoInfo(){
+          let self = this
+          ajaxGet(
+            apipath + '/aoc/api/app/aocphoto/get/' + self.sid, 
+            {},
+            function (res) {
+              console.log(res);
+              if(res.status == 200){
+                self.photoInfo=res.results
+              }
+            },
+            function (res) {
+              console.log(res);
+            }
+          )
+        },
+        handlePraise(){
+          let self = this
+          let postData = {
+            openid: self.openid,
+            sid: self.sid
+          }
+          ajaxPost(
+            apipath + '/aoc/api/app/aocdianzan/save', 
+            JSON.stringify(postData),
+            function (res) {
+              console.log(res);
+              if(res.status==200){
+                // self.photoList = res.results
+                layerMsg(res.msg);
+              } else {
+                layerMsg(res.msg);
+              }
+            },
+            function (res) {
+              console.log(res);
+            },
+            function (res) {
+              console.log(res);
+            }
+          )
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>
