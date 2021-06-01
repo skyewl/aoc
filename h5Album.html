@@ -1,0 +1,167 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8">
+    <title>全屏云视代 融竞犇新篇</title>
+    <link rel="stylesheet" href="./css/jquery.fullPage.css">
+    <link rel="stylesheet" href="./css/lanrenzhijia.css">
+    <link rel="stylesheet" href="./css/1027.css">
+
+    <script src="./js/jquery.min.js"></script>
+    <script src="./js/jquery-ui.min.js "></script>
+    <script src="./js/jquery.fullPage.min.js"></script>
+    <script type="text/javascript" src="./js/jquery.imgpreload.js"></script>
+    <script src="./js/util.js?v=20210409"></script>
+
+    <script type="text/javascript">
+        let openid = getOpenid()
+        var images = [];
+        ajaxGet(
+            apipath + '/aoc/api/app/aochtml/get/' + openid, 
+            {},
+            function (res) {
+              console.log(res);
+              if(res.status == 200){
+                images=res.results.photoUrls
+              }
+            },
+            function (res) {
+              console.log(res);
+            }
+          )
+
+        /*图片预加载*/
+        var imgNum = 0;
+        $.imgpreload(images, {
+            each: function () {
+                var status = $(this).data('loaded') ? 'success' : 'error';
+                if (status == "success") {
+                    var v = (parseFloat(++imgNum) / images.length).toFixed(2);
+                    $("#percentShow").html('已加载:' + Math.round(v * 100) + "%");
+                }
+            },
+            all: function () {
+
+                $("#percentShow ").html("已加载:100%");
+
+                $(".imgload").fadeOut(1000);
+
+            }
+        });
+    </script>
+
+
+    <script>
+        $(function () {
+            // if ($.browser.msie && $.browser.version < 36) {
+            //     $('body').addClass('ltie35');
+            // }
+            $.fn.fullpage({
+                verticalCentered: false,
+                anchors: ['page1', 'page2', 'page3', 'page4', 'page5'],
+                navigation: true,
+                navigationTooltips: ['photo1', 'photo2', 'photo3', 'photo4', 'photo5']
+            });
+
+        });
+
+        var audio_bgm;
+        $(function () {
+            audio_bgm = document.getElementById('audioPlay');
+            var bgm_interval = null,
+                bgm_rotate = 0;
+            audio_bgm.play();
+            $('.music-toggle-btn').click(function () {
+                if (typeof bgm_interval == 'number') {
+                    clearInterval(bgm_interval);
+
+                    audio_bgm.pause();
+                    $('.music-toggle-btn').addClass("no")
+                    bgm_interval = null
+                } else {
+                    audio_bgm.play();
+                    $('.music-toggle-btn').removeClass("no")
+                    bgmAnimate();
+                }
+            });
+
+            function bgmAnimate() {
+                clearInterval(bgm_interval);
+                bgm_interval = setInterval(function () {
+                    bgm_rotate += 2;
+                    $('.music-toggle-btn').css('transform', 'rotate(' + bgm_rotate + 'deg)');
+                }, 30);
+            }
+            bgmAnimate()
+            
+        })
+    </script>
+
+
+</head>
+
+<body>
+
+    <section class="imgload">
+        <div class="spinner">
+            <div class="load">
+                <div id="percentShow" style="font-size:34px;">已加载:0%</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="section section1">
+        <div class="t1bg">
+            <img src="./img/t1bg.jpg" width="100%" height="100%" alt="">
+        </div>
+        
+        <div class="arro9"><img src="./img/arro.gif" width="100" height="84"></div>
+
+    </div>
+
+    <div class="section section2">
+        <div class="t2bg">
+            <img src="./img/t2bg.jpg" width="100%" height="100%" alt="">
+        </div>
+        
+        <div class="arro9"><img src="./img/arro.gif" width="100" height="84"></div>
+    </div>
+
+
+
+    <div class="section section3">
+        <div class="t3bg">
+            <img src="./img/t3bg.jpg" width="100%" height="100%" alt="">
+        </div>
+
+        <div class="arro9"><img src="./img/arro.gif" width="100" height="84"></div>
+    </div>
+
+    <!--comment[map]-->
+    <div class="section section4">
+        <div class="t4bg">
+            <img src="./img/t4bg.jpg" width="100%" height="100%" alt="">
+        </div>
+
+        <div class="arro9"><img src="./img/arro.gif" width="100" height="84"></div>
+    </div>
+
+
+
+    <div class="section section5">
+        <div class="t5bg">
+            <img src="./img/t5bg.jpg" width="100%" height="100%" alt="">
+        </div>
+        <div class="arro9"><img src="./img/arro.gif" width="100" height="84"></div>
+    </div>
+
+
+    <audio id="audioPlay" src="./jcl.mp3" loop autoplay="autoplay"
+        style="position:absolute; z-index:-1;width:0px; height:0px; left:0px; bottom:0px;"></audio>
+    <a href="javascript:void(0);;" class="music-toggle-btn"></a>
+
+
+</body>
+
+</html>

@@ -107,6 +107,7 @@ function ajaxGet(url, data, success, error) {
     // beforeSend: function () {
     //   $(".loading").show();
     // },
+    async: false,
     success: function (data) {
       if (success) {
         success(data);
@@ -141,9 +142,13 @@ function goBack() {
 function getOpenid(){
   const url = new URL(window.location);
   let openid = url.searchParams.get('openid');
-  openid = openid ? openid : localStorage.getItem('openid')
-  if (!openid) {
-    window.location.href = apipath + '/aoc/api/wechat/wechatindex';
+  if(openid) {
+    setLoc('openid', openid)
   }
+  openid = openid ? openid : localStorage.getItem('openid')
+  
+  // if (!openid) {
+  //   window.location.href = apipath + '/aoc/api/wechat/wechatindex';
+  // }
   return openid
 }

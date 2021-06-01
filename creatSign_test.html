@@ -38,7 +38,7 @@
   <script src="./js/jquery.min.js"></script>
   <script src="./js/layer_mobile/layer.js"></script>
   <script src="./js/util.js"></script>
-  <script src="./js/vue.min.js"></script>
+  <script src="./js/vue.js"></script>
   <script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js "></script>
   <script src="./js/share.js"></script>
 
@@ -78,7 +78,7 @@
       }
     }
     .portrait-mask{
-      background-color: rgba(0, 0, 0,0.361);
+      background-color: rgba(0, 0, 0,0.36);
       position: fixed;
       left: 0;
       top: 0;
@@ -97,7 +97,7 @@
       background-size: cover;
     }
     .portrait-mask .swipeup-tip{
-      width: 6.42rem;
+      width: 7.19rem;
       height: 4.97rem;
       background-image: url(./img/swipeup-tip.png);
       background-repeat: no-repeat;
@@ -149,12 +149,39 @@
         opacity: 1;
       }
     }
+    .oneself{
+      position: fixed;
+      left: 32.3rem;
+      top: 4.04rem;
+      width: 3.32rem;
+      height: 4.1rem;
+      background-image: url(./img/self-bg.png);
+      background-repeat: no-repeat;
+      background-position: center bottom;
+      background-size: 100%;
+    }
+    .oneself .img{
+      width: 100%;
+      height: 2rem;
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+    .oneselfLocation{
+      position: fixed;
+      left: 32.2rem;
+      top: 3.8rem;
+      width: 3.5rem;
+      height: 2.24rem;
+      background-image: url(./img/location.png);
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
   </style>
 </head>
 
 <body>
-  <section class="wrap" id="app" v-cloak>
-    <div class="seat-wrap">
+  <section class="wrap" id="app">
+    <div class="seat-wrap" >
       <ul class="head-list">
         <li class="head-item" v-for="(item, index) in seatList" :style="{top: item.top,left: item.left}">
           <div class="head-box">
@@ -172,19 +199,31 @@
         
       </ul>
       
-      <!-- <div v-if="loctionSeat.top" class="location flash" :style="{top: loctionSeat.top, left: loctionSeat.left}" @click="swipeupTip" @touchmove.once="touchmove"></div> -->
-
-      <div v-if="loctionSeat.top" class="location flash" :style="{top: loctionSeat.top, left: loctionSeat.left}"></div>
+      <!-- <div v-if="loctionSeat.top" class="location flash" :style="{top: loctionSeat.top, left: loctionSeat.left}" @click="swipeupTip">
+      </div> -->
       
+    </div>
+    
+    <div class="portrait-mask">
+      <div v-show="oneselfHeadImg" class="oneself" @touchstart="touchstartSeat" @touchend="clearSetTimeout">
+        <div class="oneselfLocation flash">
+
+        </div>
+        <div class="img" :style="styleObject">
+      </div>
     </div>
 
     <div class="portrait-mask" v-show="portraitTipShow" @click="portraitTipShow=false">
       <div class="portrait-tip"></div>
     </div>
 
-    <div class="portrait-mask" v-show="swipeupTipShow" @click="swipeupTipShow=false">
+    <!-- <div class="portrait-mask" v-show="swipeupTipShow" @click="swipeupTipShow=false">
       <div class="swipeup-tip" :style="{top: (parseFloat(loctionSeat.top)+.8) + 'rem' , left: (parseFloat(loctionSeat.left) - 2.4) + 'rem'}"></div>
-    </div>
+    </div> -->
+
+    <!-- <div class="portrait-mask" v-show="swipeupTipShow" @click="swipeupTipShow=false">
+      <div class="swipeup-tip"></div>
+    </div> -->
 
     <div class="portrait-mask" v-show="helpsucTipShow">
       <div class="helpsuc-tip">
@@ -1741,12 +1780,18 @@
         ],
         checkSignImg: '',
         loctionSeat: {},
-        helpsucTipShow: false
+        helpsucTipShow: false,
+        timeOut: null,
+        oneselfHeadImg: '',
+        styleObject: {
+          
+        }
       },
       created() {
         this.openid = getOpenid()
         console.log(this.openid)
         this.getSelectedList()
+        this.getUserInfo()
       },
       mounted: function () {
         setTimeout(()=>{
@@ -1754,6 +1799,27 @@
         }, 5000)
       },
       methods: {
+        getUserInfo(){
+          let self = this
+          ajaxGet(
+            apipath + '/aoc/api/app/aocuser/get/' + self.openid, 
+            {},
+            function (res) {
+              console.log(res);
+              if(res.status == 200){
+                self.oneselfHeadImg = res.results.photoyunduoHeader
+                self.styleObject = {
+          backgroundImage: 'url( ' + self.oneselfHeadImg +')',
+        }
+              } else {
+                layerMsg(res.msg);
+              }
+            },
+            function (res) {
+              console.log(res);
+            }
+          )
+        },
         getSelectedList() {
           let self = this
           ajaxGet(
@@ -1813,14 +1879,17 @@
             obj.check = false
             this.$set(this.seatList, index, obj)
           }, 2000)
+
         },
+
         swipeupTip(){
           this.swipeupTipShow = true
-          let timout = setTimeout(()=>{
-            this.swipeupTipShow = false
-          }, 2000)
+          // let timout = setTimeout(()=>{
+          //   this.swipeupTipShow = false
+          // }, 3000)
         },
-        touchmove(){
+
+        helpSub(){
           let self = this
           // self.helpsucTipShow = true
           // return
@@ -1841,6 +1910,17 @@
               console.log(err)
             }
           )
+        },
+
+        // 长按助力
+        touchstartSeat(index){
+          clearTimeout(this.timeOut); //再次清空定时器，防止重复注册定时器
+          this.timeOut = setTimeout(function() {
+            this.helpSub()
+          }.bind(this), 3000,)
+        },
+        clearSetTimeout(){
+          clearTimeout(this.timeOut);
         },
 
         backIndex(){

@@ -37,10 +37,10 @@
   <script src="./js/jquery.min.js"></script>
   <script src="./js/layer_mobile/layer.js"></script>
   <script src="./js/util.js?v=20210408"></script>
-  <script src="./js/vue.min.js"></script>
-  <script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js "></script>
+  <script src="./js/vue.js"></script>
+  <!-- <script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js "></script>
   <script src="./js/share.js"></script>
-  <script src="https://gosspublic.alicdn.com/aliyun-oss-sdk-6.8.0.min.js"></script>
+  <script src="https://gosspublic.alicdn.com/aliyun-oss-sdk-6.8.0.min.js"></script> -->
 
   <link rel="stylesheet" href="./css/base.css">
   <style>
@@ -84,6 +84,9 @@
       justify-content: center;
       align-items: center;
     }
+    .photo-list .block.selected{
+      background: bisque;
+    }
 
     .photo-list .block .photo-img {
       max-width: 100%;
@@ -112,19 +115,15 @@
       background-repeat: no-repeat;
       margin-top: -0.1rem;
     }
-    .upload-btn {
+    .save-btn {
       width: 3.78rem;
       height: 1.2rem;
-      background-image: url(./img/uploadPhoto-btn.png);
+      background-image: url(./img/save-btn.png);
       background-repeat: no-repeat;
       background-size: cover;
       margin-left: .4rem;
     }
-    .upload-ipt{
-      width: 3.78rem;
-      height: 1.2rem;
-      opacity: 0;
-    }
+
   </style>
 </head>
 
@@ -133,9 +132,13 @@
     <div class="album-bg"></div>
     <ul class="photo-list" @scroll="scrollMore">
       <template v-if="photoList.length">
-        <li v-for="item in photoList" class="block" @click="checkPhoto(item.sid)">
-          <img class="photo-img" :src="item.photoUrl" alt="">
-        </li>
+        <template v-for="(item, index) in photoList">
+          <li class="block" :class="item.selected?'selected':''" @click="select(index)">
+            <img class="photo-img" :src="item.photoUrl" alt="">
+            <div></div>
+          </li>
+        </template>
+        
       </template>
       <li class="notphoto" v-else>
         暂无照片
@@ -143,9 +146,9 @@
       
     </ul>
     <div class="btns">
-      <div class="backBtn" @click="backIndex"></div>
-      <div class="upload-btn">
-        <input class="upload-ipt" id="files" name="photofile" type="file" multiple accept="image/*" @change="uploadPhoto">
+      <div class="backBtn" @click="back"></div>
+      <div class="save-btn" @click="savePhotosList">
+        
       </div>
     </div>
     
@@ -171,7 +174,10 @@
         uploadImgUrl: '',
         pageNo: 1,
         flag: false,
-        more: true
+        more: true,
+        selectPhotoList:[
+
+        ]
       },
       created: function () {
         this.openid = getOpenid()
@@ -193,11 +199,18 @@
             function (res) {
               console.log(res);
               if(res.status==200){
+                if(res.results.length){
+                  for (let item of res.results){
+                    item.selected = false
+                  }
+                }
+
                 if(self.pageNo==1){
                   self.photoList = res.results
                 } else {
                   self.photoList = self.photoList.concat(res.results)
                 }
+                console.log('self.photoList',self.photoList)
                 if(res.results.length==10){
                   this.more = true
                 } else {
@@ -235,117 +248,64 @@
           }
         },
 
-        backIndex(){
+        back(){
           window.history.back()
         },
-        checkPhoto(sid) {
-          window.location.href='./viewPhoto.html?albumName=' + this.albumName + '&sid=' + sid + '&openid=' + this.openid
+
+        select(index) {
+          let obj = this.photoList[index]
+          let url = this.photoList[index].photoUrl
+          if(obj.selected){
+            obj.selected = false
+            this.selectPhotoList = this.selectPhotoList.filter(item => {
+              return item!=url
+            })
+
+          } else {
+            
+            if( this.selectPhotoList.length==5){
+              layerMsg('最多选五张')
+              return
+            }
+            obj.selected = true
+            this.selectPhotoList.push(url)
+
+          }
+          this.$set(this.photoList, index, obj)
+          console.log('this.selectPhotoList',this.selectPhotoList)
         },
-        uploadPhoto() {
+
+        savePhotosList(){
           let self = this
-          //询问框
-          layer.open({
-            content: '确定上传吗？'
-            ,btn: ['确定', '重选']
-            ,yes: function(index){
-              let filesObj = document.getElementById('files')
-          if(filesObj.files.length > 9){
-            layerMsg('最多只能添加9张图片'); 
+          if( this.selectPhotoList.length<5){
+            layerMsg('请选五张')
             return
           }
-          if(self.uploading){
-            return
-          }
-
-          self.uploading = true
-          layer.open({
-            type: 2
-            ,content: '上传中'
-          });
-
-          $.ajax({
-            type: 'get',
-            url: apipath + '/aoc/api/osstoken/sts',
-            dataType: 'json',
-            async: false,
-            success: function (data) {
-              let client = new OSS({
-                accessKeyId: data.results.AccessKeyId,
-                accessKeySecret: data.results.AccessKeySecret,
-                stsToken: data.results.SecurityToken,
-                // region表示您申请OSS服务所在的地域，例如oss-cn-hangzhou。
-                region: 'oss-cn-beijing',
-                bucket: 'kmaoc'
-              });
-
-              // let aafile = $('input[name="photofile"]').prop('files')[0];
-              let aafile = $('input[name="photofile"]').prop('files');
-              console.log(aafile)
-              if(aafile.length){
-                for( let item of aafile ){
-                  console.log(item.name);
-                  let storeAs = 'openid/' + item.name
-                  // storeAs可以自定义为文件名（例如file.txt）或目录（例如abc/test/file.txt）的形式，实现将文件上传至当前Bucket或Bucket下的指定目录。
-                  // file可以自定义为File对象、Blob数据以及OSS Buffer。
-                  client.put(storeAs, item).then(function (result) {
-                    console.log(result);
-
-                    // 获取服务器返回图片地址
-                    self.uploadImgUrl = result.url
-                    // 上传到相册
-                    self.uploadImgToAlbum()
-
-                    // $("#myimg").attr("src", result.url);
-                  }).catch(function (err) {
-                    console.log(err);
-                  })
-                }
-
-                
-              }
-              
-              
-
-            }
-          })
-              layer.close(index);
-            }
-          });
-         
-          
-        },
-        uploadImgToAlbum(){
-          let self = this
-          let postData = {
-            area: self.albumName,
+          let postData={
             openid: self.openid,
-            photoUrl: self.uploadImgUrl
+            photoUrls: self.selectPhotoList
           }
           ajaxPost(
-            apipath + '/aoc/api/app/aocphoto/save', 
+            apipath + '/aoc/api/app/aochtml/save', 
             JSON.stringify(postData),
             function (res) {
-              layer.closeAll()
               console.log(res);
+              layerMsg(res.msg);
               if(res.status==200){
-                layerMsg('上传成功');
-                self.pageNo = 1
-                self.getPhotoList()
+                
               } else {
-                layerMsg(res.msg);
+                
               }
             },
             function (res) {
-              layer.closeAll()
               console.log(res);
             },
             function (res) {
-              console.log(res);
-              layer.closeAll()
-              self.uploading = false
+              console.log(res);              
             }
           )
         }
+        
       }
     })
   </script>

@@ -40,7 +40,7 @@
   
   <script src="./js/jquery.min.js"></script>
   <script src="./js/layer_mobile/layer.js"></script>
-  <script src="./js/util.js?v=20210408"></script>
+  <script src="./js/util.js?v=20210405"></script>
   <script src="./js/vue.min.js"></script>
   <script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js "></script>
   <script src="./js/share.js"></script>
@@ -372,16 +372,17 @@
           )
         },
         gotoAlbum(){
-          if(this.menu.yunxiangche==0){
-            layer.open({
-              type: 1,
-              content: $('.notStartedLayer').html(),
-              shade: 'background-color: rgba(0,0,0,.8)', //自定义遮罩的透明度
-              style: 'background:none; border:none;' //自定风格
-            });
-          } else {
-            window.location.href='http://aoc.heisezhizhao.com/cloudAlbum.html?openid=' + this.openid
-          }
+          // if(this.menu.yunxiangche==0){
+          //   layer.open({
+          //     type: 1,
+          //     content: $('.notStartedLayer').html(),
+          //     shade: 'background-color: rgba(0,0,0,.8)', //自定义遮罩的透明度
+          //     style: 'background:none; border:none;' //自定风格
+          //   });
+          // } else {
+          //   window.location.href='http://aoc.heisezhizhao.com/cloudAlbum.html?openid=' + this.openid
+          // }
+          window.location.href='http://aoc.heisezhizhao.com/cloudAlbum.html?openid=' + this.openid
         },
         gotoTrip(){
           this.tripLayerShow = true

@@ -34,8 +34,8 @@
   
   <script src="./js/jquery.min.js"></script>
   <script src="./js/layer_mobile/layer.js"></script>
-  <script src="./js/util.js"></script>
-  <script src="./js/vue.js"></script>
+  <script src="./js/util.js?v=20210408"></script>
+  <script src="./js/vue.min.js"></script>
   <script src="https://res2.wx.qq.com/open/js/jweixin-1.6.0.js "></script>
   <script src="./js/share.js"></script>
   
@@ -47,10 +47,10 @@
     .album-bg{
       background-size: 100% 100%;
       background-repeat: no-repeat;
-      width: 100%;
-      height: 100%;
+      width: 10.8rem;
+      height: 19.2rem;
       position: absolute;
-      background-image: url(./img/cloudAlbum-bg.jpg);
+      background-image: url(./img/cloudAlbum-bg1.jpg);
       top: 0;
       left: 0;
       z-index: -1;
@@ -63,6 +63,12 @@
       height: 2.92rem;
       position: absolute;
       /* background-color: antiquewhite; */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: .66rem;
+      color: #fff;
+      font-weight: 500;
     }
     .block-list .block1{
       top: 4.12rem;
@@ -88,19 +94,36 @@
       top: 10.56rem;
       left: 3.96rem;
     }
+    .block-list .wrap{
+      width: 1.38rem;
+    }
+    .backBtn{
+      width: 2rem;
+      height: 1rem;
+      background-image: url(./img/back.png);
+      background-size: cover;
+      background-repeat: no-repeat;
+      position: absolute;
+      top: 15rem;
+      left: 50%;
+      margin-left: -1rem;
+    }
   </style>
 </head>
 <body>
   <div id="app" class="page-wrap">
     <div class="album-bg"></div>
     <ul class="block-list">
-      <li class="block" v-for="item in menuList" :class="['block' + item.menuId ]" @click="clickMenu(item.name)"></li>
+      <li class="block" v-for="item in menuList" :class="['block' + item.menuId ]" @click="clickMenu(item.area)">
+        <span :class="item.menuId==6?'wrap': ''">{{item.name}}</span>
+      </li>
       <!-- <li class="block block2"></li>
       <li class="block block3"></li>
       <li class="block block4"></li>
       <li class="block block5"></li>
       <li class="block block6"></li> -->
     </ul>
+    <div class="backBtn" @click="backIndex"></div>
   </div>
   
   <script>
@@ -111,40 +134,51 @@
         menuList: [
           {
             menuId: 1,
-            name: 'cangshan'
+            area: 'cangshan',
+            name: '苍山'
+
           },
           {
             menuId: 2,
-            name: 'lanran'
+            area: 'lanran',
+            name: '蓝染'
           },
           {
             menuId: 3,
-            name: 'xizhouzhen'
+            area: 'xizhouzhen',
+            name: '喜洲镇'
           },
           {
             menuId: 4,
-            name: 'erhai'
+            area: 'erhai',
+            name: '洱海'
           },
           {
             menuId: 5,
-            name: 'qita'
+            area: 'qita',
+            name: '其他'
           },
           {
             menuId: 6,
-            name: 'sheyingdasai'
+            area: 'qudaodahui',
+            name: '渠道大会'
           },
         ]
       },
       created: function () {
         this.openid = getOpenid()
+        // setLoc('openid', this.openid)
       },
       mounted: function () {
         
       },
       methods: {
-        clickMenu(name){
-          window.location.href='./album.html?albumName=' + name
-        }
+        clickMenu(area){
+          window.location.href='./album.html?albumName=' + area + '&openid=' + this.openid
+        },
+        backIndex(){
+          window.location.href='https://fly.sj90.com/aoc-html/index.html?openid=' + this.openid
+        },
       }
     })
     

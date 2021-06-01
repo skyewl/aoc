@@ -49,7 +49,7 @@
     }
 
     .bigAoc-list .head-item {
-      width: .48rem;
+      width: .4rem;
       height: .4rem;
       position: absolute;
       /* background-color: #f00; */
@@ -57,7 +57,7 @@
     }
 
     .bigAoc-list .head-img {
-      width: .48rem;
+      width: .46rem;
       height: .4rem;
       vertical-align: top;
     }
@@ -85,7 +85,7 @@
       opacity: 1;
       left: 0;
       top: 0;
-      animation: change 3s;
+      animation: change 5s;
       display: none;
     }
 
@@ -98,19 +98,31 @@
         opacity: 1;
       }
     }
+    .falsh{
+      animation: change2 1s;
+    }
+    @keyframes change2 {
+      0% {
+        transform: scale(100);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
   </style>
 </head>
 
 <body>
   <div id="app" style="width: 100%;height: 100%;overflow: hidden;">
     <video controls class="video-box" id="bgvid">
-      <source src="http://kmaoc.oss-cn-beijing.aliyuncs.com/openid/AOC.mp4" type="video/mp4">
+      <source src="./video/AOC.mp4" type="video/mp4">
     </video>
 
     <div class="bigAoc">
       <ul class="bigAoc-list">
         <li class="head-item" v-for="(item, index) in seatList" :style="{top: item.top,left: item.left}">
-          <img v-if="item.headImg" :src="item.headImg" class="head-img" alt="">
+          <img v-if="item.headImg" :src="item.headImg" class="head-img falsh" alt="">
         </li>
       </ul>
       <!-- <div class="aoc-cover"></div> -->
@@ -119,38 +131,39 @@
   </div>
 
   <script>
+    var intv = null
     var vm = new Vue({
       el: '#app',
       data: {
         seatList: [
           {
             seatid: 1,
-            left: '1.74rem',
+            left: '1.76rem',
             top: '6.62rem',
             headImg: ''
           },
           {
             seatid: 2,
-            left: '2.35rem',
+            left: '2.36rem',
             top: '6.63rem',
             headImg: ''
           },
           {
             seatid: 3,
-            left: '1.92rem',
+            left: '1.94rem',
             top: '6.22rem',
             headImg: ''
           },
           {
             seatid: 4,
-            left: '2.59rem',
-            top: '6.19rem',
+            left: '2.6rem',
+            top: '6.2rem',
             headImg: ''
           },
           {
             seatid: 5,
-            left: '2.09rem',
-            top: '5.83rem',
+            left: '2.12rem',
+            top: '5.84rem',
             headImg: ''
           },
           {
@@ -161,19 +174,19 @@
           },
           {
             seatid: 7,
-            left: '2.27rem',
-            top: '5.43rem',
+            left: '2.32rem',
+            top: '5.44rem',
             headImg: ''
           },
           {
             seatid: 8,
             left: '2.96rem',
-            top: '5.27rem',
+            top: '5.28rem',
             headImg: ''
           },
           {
             seatid: 9,
-            left: '2.45rem',
+            left: '2.5rem',
             top: '5.04rem',
             headImg: ''
           },
@@ -215,7 +228,7 @@
           },
           {
             seatid: 16,
-            left: '3.01rem',
+            left: '3.04rem',
             top: '3.85rem',
             headImg: ''
           },
@@ -226,55 +239,11 @@
             headImg: ''
           },
           {
-            seatid: 10,
-            left: '3.16rem',
-            top: '4.83rem',
-            headImg: ''
-          },
-          {
-            seatid: 11,
-            left: '2.65rem',
-            top: '4.64rem',
-            headImg: ''
-          },
-          {
-            seatid: 12,
-            left: '3.38rem',
-            top: '4.39rem',
-            headImg: ''
-          },
-          {
-            seatid: 13,
-            left: '2.83rem',
-            top: '4.25rem',
-            headImg: ''
-          },
-
-          {
-            seatid: 14,
-            left: '3.56rem',
-            top: '3.99rem',
-            headImg: ''
-          },
-          {
-            seatid: 15,
-            left: '3.01rem',
-            top: '3.85rem',
-            headImg: ''
-          },
-          {
-            seatid: 16,
-            left: '3.76rem',
-            top: '3.56rem',
-            headImg: ''
-          },
-          {
-            seatid: 17,
+            seatid: 18,
             left: '3.24rem',
             top: '3.46rem',
             headImg: ''
           },
-
           {
             seatid: 18,
             left: '3.46rem',
@@ -385,10 +354,6 @@
           },
 
 
-
-
-
-
           {
             seatid: 35,
             left: '5.29rem',
@@ -449,7 +414,6 @@
             top: '6.67rem',
             headImg: ''
           },
-
 
 
           {
@@ -1029,44 +993,60 @@
             headImg: ''
           },
 
-        ]
+        ],
+        isStop: false
       },
       mounted() {
         // this.getHeadImg()
       },
       methods: {
-        getHeadImg() {
+        getHeadImg(stop) {
           let self = this
-          let time = 1
-          let intv = window.setInterval(function () {
-
-            if (time == 16) {
+          
+          let time = 0
+          intv = window.setInterval(function () {
+            time = time + 1
+            if (time==100) {
               clearInterval(intv)
             }
-            time = time + 1
+            
             ajaxGet(
               apipath + '/aoc/api/app/aocdp/lunxun', {},
               function (res) {
                 console.log(res);
                 if (res.status == 200) {
-                  let resArr = res.results
-                  // let resArr = [
-
-                  // ]
-                  let newSeatList = []
-                  newSeatList = self.seatList.filter(item => {
-                    return !item.headImg
-                  })
-                  console.log(newSeatList)
-                  self.seatList.splice(self.seatList.length - newSeatList.length, newSeatList.length)
+                  // let resArr = res.results
+                  let resArr = [
+                    'https://kmaoc.oss-cn-beijing.aliyuncs.com/image/202104/2CAC18622E2BF2C2D14860E6A6C0A0BE.jpg',
+                    'https://kmaoc.oss-cn-beijing.aliyuncs.com/image/202104/8F0C42D6ACDDC6785C4FA730C2CDF0BC.jpg'
+                  ]
+                  // let newSeatList = []
+                  // newSeatList = self.seatList.filter(item => {
+                  //   return !item.headImg
+                  // })
+                  // // console.log(newSeatList)
+                  // self.seatList.splice(self.seatList.length - newSeatList.length, newSeatList.length)
 
                   if (resArr.length) {
-                    newSeatList.forEach((item, index) => {
-                      item.headImg = resArr[index]
+                    self.seatList.forEach((item, index) => {
+                      // item.headImg = resArr[index]
+                      if(!item.headImg){
+                        item.headImg = resArr[0]
+                        resArr.shift()
+                      }
                     })
                   }
-                  self.seatList = self.seatList.concat(newSeatList)
+                  // self.seatList = self.seatList.concat(newSeatList)
                   console.log(self.seatList)
+
+                  // if(self.seatList.length==139){
+                  //   resArr.forEach((item, index) => {
+                  //     // item.headImg = resArr[index]
+                  //     // let obj = self.seatList[index]
+                  //     // obj.headImg = item
+                  //     self.$set(self.seatList[index], 'headImg', item)
+                  //   })
+                  // }
 
                 }
               },
@@ -1075,7 +1055,7 @@
               }
             )
 
-          }, 1000)
+          }, 10)
         }
       }
     })
@@ -1095,20 +1075,21 @@
     });
 
     video.addEventListener('timeupdate', function () {
-      // var i = window.setInterval(function () {
-      //   if(video1.ended){
-      //     clearInterval(i);
-      //     $(".aoc-big").show();
-      //   }
-      // }, 20)
       var timeDisplay;
       //用秒数来显示当前播放进度
       timeDisplay = Math.floor(video.currentTime)
       // console.log(Math.floor(video.currentTime))
       //当视频播放到 16s的时候做处理
+      if (timeDisplay == 14) {
+        clearInterval(intv)
+      }
       if (timeDisplay == 16) {
+        
         //处理代码
+        // $('.head-img').removeClass('falsh')
+        
         $('.aoc-big').show()
+        // $('.bigAoc-list').hide()
       }
     }, false)
   </script>
